@@ -8,8 +8,17 @@ use App\Models\User;
 
 class UserController extends Controller
 {
-    public function index(){
-        $users = User::orderByDesc('id')->paginate(10);
+    public function index(Request $request){
+        $query = User::query();
+        if($request->has('search')) {
+            $search = $request->input('search') ?? '';
+            $query->when($search,function ($query,$search) {
+               return $query->where('name','like','%' . $search . '%');
+            });
+            $users = $query->paginate(10);
+        }
+        $users = $query->paginate(10);
+
         return view('admin.user.list', compact('users'));
     }
 
@@ -29,4 +38,5 @@ class UserController extends Controller
         $user->delete();
         return redirect()->back()->with('success', 'Xóa khách hàng thành công.');
     }
+
 }

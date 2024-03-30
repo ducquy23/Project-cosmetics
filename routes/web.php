@@ -38,7 +38,7 @@ Route::prefix('admin')->group(function () {
     Route::get('/login', [AuthController::class, 'login'])->middleware(['guest:admin'])->name('admin.login');
     Route::post('/login', [AuthController::class, 'loginPost'])->middleware(['guest:admin'])->name('admin.loginPost');
 
-    Route::middleware(['auth:admin'])->group(function () {
+//    Route::middleware(['auth:admin'])->group(function () {
         Route::get('/dashboard', [DashboardController::class, 'index'] )->name('admin.dashboard');
 
         Route::get('/logout', [AuthController::class, 'logout'])->name('admin.logout');
@@ -88,6 +88,7 @@ Route::prefix('admin')->group(function () {
         Route::get('/user', [UserController::class, 'index'])->name('user.index');
         Route::get('/user/{user}', [UserController::class, 'handleStatus'])->name('user.status');
         Route::get('/user/destroy/{user}', [UserController::class, 'destroy'])->name('user.destroy');
+        Route::get('/search', [UserController::class, 'search'])->name('user.search');
 
         //Staff
         Route::get('/staff', [StaffController::class, 'index'])->name('staff.index');
@@ -112,8 +113,8 @@ Route::prefix('admin')->group(function () {
         Route::post('/post/edit/{post}', [PostController::class, 'update'])->name('post.update');
         Route::get('/post/show/{post}', [PostController::class, 'show'])->name('post.show');
         Route::delete('/post/delete/{post}', [PostController::class, 'destroy'])->name('post.destroy');
-    });
-    
+//    });
+
 });
 
 //Frontend
@@ -154,7 +155,7 @@ Route::middleware(['auth:web'])->group(function () {
     Route::get('/yeu-thich', [FavoriteController::class, 'index'])->name('favorite');
     Route::get('/yeu-thich/{product}', [FavoriteController::class, 'add'])->name('favorite.add');
     Route::get('/yeu-thich/delete/{product_id}', [FavoriteController::class, 'delete'])->name('favorite.delete');
-    
+
     Route::get('/dat-hang', [CheckoutController::class, 'index'])->name('checkout');
     Route::post('/checkout', [CheckoutController::class, 'checkout'])->name('checkoutPost');
     Route::get('/checkout/vnPayCheck', [CheckoutController::class, 'vnPayCheck'])->name('checkout.vnpay');
@@ -170,7 +171,7 @@ Route::middleware(['auth:web'])->group(function () {
 
     Route::get('/doi-mat-khau', [AccountController::class, 'changePassword'])->name('account.change-password');
     Route::post('/doi-mat-khau', [AccountController::class, 'updatePassword'])->name('account.update-password');
- 
+
 });
 
 Route::fallback(function () {

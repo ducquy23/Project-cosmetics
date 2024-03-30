@@ -21,7 +21,6 @@ class DashboardController extends Controller
         ];
 
         $data['total_income'] = Order::where('status', 4)->sum('total_price');
-
         // /* Xử lý lấy data cho Bar chart */
         $currentYear = date('Y');
         $currentMonth = $request->month ?? date('m');
@@ -34,7 +33,7 @@ class DashboardController extends Controller
             ->get()
             ->pluck('total_price', 'day')
             ->toArray();
-        
+
         // Xử lý để thêm các ngày không có đơn hàng vào mảng
         $daysInMonth = cal_days_in_month(CAL_GREGORIAN, $currentMonth, $currentYear);
         for ($day = 1; $day <= $daysInMonth; $day++) {
