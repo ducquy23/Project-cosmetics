@@ -87,7 +87,7 @@
                                         @elseif (request('month') == '' AND date('m') == $i)
                                             <option value="{{$i}}" selected>Tháng {{$i}}</option>
                                         @else
-                                        <option value="{{$i}}">Tháng {{$i}}</option> 
+                                        <option value="{{$i}}">Tháng {{$i}}</option>
                                         @endif
                                     @endfor
                                 </select>
@@ -97,7 +97,7 @@
                     </div>
                 </div>
             </div>
-            
+
         </div>
         <div class="row">
             <div class="col-lg-6 d-flex align-items-stretch">
@@ -176,7 +176,7 @@
                                                 <p class="fw-semibold mb-0">{{number_format($order->total_price)}}đ</p>
                                             </td>
                                             <td class="border-bottom-0">
-                                                <p class="fw-semibold mb-0">{{date_format($order->created_at,'H:i A - d/m')}}</p>
+                                                <p class="fw-semibold mb-0">{{date_format($order->created_at,'H:i A - d/m/Y')}}</p>
                                             </td>
                                         </tr>
                                     @endforeach
