@@ -3,6 +3,22 @@
 @section('content')
     <div class="container-fluid">
         <div class="row">
+            <form action="{{ route('category.index') }}" method="get" enctype="multipart/form-data" class="d-flex">
+                <div class="col-lg-3">
+                    <div class="input-group mb-3">
+                        <input type="text" value="{{ request('search') }}" name="search" class="form-control" placeholder="Search By Name..." aria-label="Search"
+                               aria-describedby="basic-addon2">
+                        <div class="input-group-append">
+                            <button class="btn btn-primary" id="input-search-customer"
+                                    style="border-top-left-radius: 0;border-bottom-left-radius: 0;padding: 8px"
+                                    type="submit">Search
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="row">
             <div class="card w-100">
                 <div class="card-body p-4">
                     <div class="d-flex align-items-center justify-content-between">
@@ -28,7 +44,7 @@
                             </tr>
                             </thead>
                             <tbody>
-                            @foreach($categories as $key=>$category)
+                            @foreach($listCategory as $key=> $category)
                                 <tr>
                                     <td class="border-bottom-0">
                                         <h6 class="fw-semibold mb-0">{{$key+1}}</h6>

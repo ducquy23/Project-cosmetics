@@ -10,9 +10,15 @@ class OrderController extends Controller
 {
     public function index(Request $request){
         $status = $request->status;
+        $name = $request->input('search') ?? '';
         $orders = Order::orderByDesc('id');
         if(isset($status)){
             $orders = $orders->where('status', $status);
+        }
+        if (isset($name)) {
+            $orders->when($name,function ($query,$search) {
+                return $query->where('name','like', '%' . $search . '%');
+            });
         }
         $orders = $orders->paginate(10);
         return view('admin.order.list', compact('orders'));
@@ -27,5 +33,10 @@ class OrderController extends Controller
         $order->save();
 
         return redirect()->back()->with('success', 'Đơn hàng đã được xác nhận.');
+    }
+    public function deleteOrder(Order $order) {
+        $order->status = 0;
+        $order->save();
+        return redirect()->back()->with('success', 'Đơn hàng đã được hủy.');
     }
 }

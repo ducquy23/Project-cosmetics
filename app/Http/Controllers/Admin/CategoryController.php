@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Category;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Throwable;
 use Illuminate\Support\Facades\DB;
 
@@ -18,10 +19,19 @@ class CategoryController extends Controller
         view()->share('parent_cates', $parent_cates);
     }
 
-    public function index()
+    public function index(Request $request)
     {
-        $categories = Category::orderByDesc('id')->get();
-        return view('admin.category.list', compact('categories'));
+        $query = Category::query();
+        if ($request->has('search')) {
+            $search = $request->input('search') ?? '';
+            $query->when($search, function ($query, $search) {
+                return $query->where('name', 'like', '%' . $search . '%');
+            });
+            $listCategory = $query->paginate(10);
+
+        }
+        $listCategory = $query->paginate(10);
+        return view('admin.category.list',compact('listCategory'));
     }
 
     /**
@@ -53,7 +63,7 @@ class CategoryController extends Controller
             DB::rollback();
             throw $e;
         }
-        
+
     }
 
     /**

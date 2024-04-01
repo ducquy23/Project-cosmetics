@@ -4,10 +4,10 @@
 
     <div class="container-fluid">
         <div class="row">
-            <form action="{{ route('user.index') }}" method="get" enctype="multipart/form-data">
+            <form action="{{ route('user.index') }}" method="get" enctype="multipart/form-data" class="d-flex">
                 <div class="col-lg-3">
                     <div class="input-group mb-3">
-                        <input type="text" value="{{ request('search') }}" name="search" class="form-control" placeholder="Search..." aria-label="Search"
+                        <input type="text" value="{{ request('search') }}" name="search" class="form-control" placeholder="Search By Name..." aria-label="Search"
                                aria-describedby="basic-addon2">
                         <div class="input-group-append">
                             <button class="btn btn-primary" id="input-search-customer"
@@ -18,6 +18,7 @@
                     </div>
                 </div>
             </form>
+
         </div>
         <div class="row">
             <div class="card w-100">

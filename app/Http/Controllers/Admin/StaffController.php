@@ -9,7 +9,7 @@ use App\Models\Admin;
 class StaffController extends Controller
 {
     public function index(Request $request){
-        $name = $request->input('name');
+        $name = $request->input('name') ?? '';
 
         $staffs = Admin::when($name, function($query, $name){
                 $query->where('name', 'LIKE', "%$name%");

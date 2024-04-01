@@ -83,6 +83,7 @@ Route::prefix('admin')->group(function () {
         Route::get('/order', [OrderController::class, 'index'])->name('order.index');
         Route::get('/order/show/{order}', [OrderController::class, 'show'])->name('order.show');
         Route::get('/order/confirm/{order}', [OrderController::class, 'confirm'])->name('order.confirm');
+        Route::get('/order/confirm-delete/{order}', [OrderController::class, 'deleteOrder'])->name('order.delete-order');
 
         //User
         Route::get('/user', [UserController::class, 'index'])->name('user.index');

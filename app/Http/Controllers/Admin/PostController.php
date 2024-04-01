@@ -15,9 +15,18 @@ class PostController extends Controller
      * Display a listing of the resource.
      */
     public function index(Request $request)
-    {   
+    {
 
-        $posts = Post::orderByDesc('id')->paginate(5);
+        $query = Post::query();
+        if($request->has('search')) {
+            $search = $request->input('search') ?? '';
+            $query->when($search,function ($query,$search) {
+                return $query->where('title','like', '%' . $search . '%');
+            });
+            $posts = $query->paginate('10');
+        }
+        $posts = $query->paginate('10');
+
         return view('admin.post.list', compact('posts'));
     }
 
@@ -25,7 +34,7 @@ class PostController extends Controller
      * Show the form for creating a new resource.
      */
     public function create()
-    {   
+    {
         $post_types = PostType::all();
         return view('admin.post.create', compact('post_types'));
     }
@@ -46,13 +55,13 @@ class PostController extends Controller
         try {
             $post = Post::create([
                 'post_type_id' => $request->post_type_id,
-                'admin_id' => Auth::id(),
+                'admin_id' => Auth::guard('admin')->user()->id,
                 'title' => $request->title,
                 'content' => $request->content,
                 'view' => 0,
                 'thumbnail' => $this->saveImage($request->thumbnail),
             ]);
-            
+
             DB::commit();
             return redirect()->route('post.index');
         } catch (\Throwable $e) {
@@ -66,7 +75,7 @@ class PostController extends Controller
         $res = $image->storeAs('thumbnail', $imageName, 'public');
         if($res){
             $path = 'thumbnail/'. $imageName;
-        } 
+        }
         return $path;
 
     }
