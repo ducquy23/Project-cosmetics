@@ -38,7 +38,7 @@ Route::prefix('admin')->group(function () {
     Route::get('/login', [AuthController::class, 'login'])->middleware(['guest:admin'])->name('admin.login');
     Route::post('/login', [AuthController::class, 'loginPost'])->middleware(['guest:admin'])->name('admin.loginPost');
 
-//    Route::middleware(['auth:admin'])->group(function () {
+    Route::middleware(['auth:admin'])->group(function () {
         Route::get('/dashboard', [DashboardController::class, 'index'] )->name('admin.dashboard');
 
         Route::get('/logout', [AuthController::class, 'logout'])->name('admin.logout');
@@ -114,7 +114,7 @@ Route::prefix('admin')->group(function () {
         Route::post('/post/edit/{post}', [PostController::class, 'update'])->name('post.update');
         Route::get('/post/show/{post}', [PostController::class, 'show'])->name('post.show');
         Route::delete('/post/delete/{post}', [PostController::class, 'destroy'])->name('post.destroy');
-//    });
+    });
 
 });
 
