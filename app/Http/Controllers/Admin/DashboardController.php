@@ -35,7 +35,7 @@ class DashboardController extends Controller
             ->toArray();
 
         // Xử lý để thêm các ngày không có đơn hàng vào mảng
-        $daysInMonth = cal_days_in_month(CAL_GREGORIAN, $currentMonth, $currentYear);
+        $daysInMonth = Carbon::create($currentYear, $currentMonth, 1)->daysInMonth;
         for ($day = 1; $day <= $daysInMonth; $day++) {
             if (!array_key_exists($day, $totalSalesByDay)) {
                 $totalSalesByDay[$day] = 0;
