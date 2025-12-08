@@ -21,6 +21,8 @@ class UpdateProductRequest extends FormRequest
      */
     public function rules(): array
     { 
+        $productId = $this->route('product') ? $this->route('product')->id : null;
+        
         return [
             'brand_id' => 'required|integer',
             'origin_id' => 'required|integer',
@@ -28,6 +30,7 @@ class UpdateProductRequest extends FormRequest
             'skin_type' => 'nullable|string',
             'texture' => 'nullable|string',
             'name' => 'required|string',
+            'slug' => 'nullable|unique:products,slug,' . $productId . '|string|max:255',
             'initial_price' => 'required|numeric',
             'discount' => 'nullable|integer|between:0,100',
             'quantity' => 'required|numeric',

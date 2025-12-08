@@ -29,6 +29,7 @@ class StoreProductRequest extends FormRequest
             'skin_type' => 'nullable|string',
             'texture' => 'nullable|string',
             'name' => 'required|string|unique:products,name',
+            'slug' => 'nullable|unique:products,slug|string|max:255',
             'product_code' => 'required|string|unique:products,product_code',
             'discount' => 'nullable|integer|between:0,100',
             'initial_price' => 'required|numeric',

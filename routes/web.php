@@ -12,6 +12,7 @@ use App\Http\Controllers\Admin\StaffController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\PostTypeController;
 use App\Http\Controllers\Admin\PostController;
+use App\Http\Controllers\Admin\BannerController;
 
 use App\Http\Controllers\Frontend\ShopController;
 use App\Http\Controllers\Frontend\CartController;
@@ -114,6 +115,15 @@ Route::prefix('admin')->group(function () {
         Route::post('/post/edit/{post}', [PostController::class, 'update'])->name('post.update');
         Route::get('/post/show/{post}', [PostController::class, 'show'])->name('post.show');
         Route::delete('/post/delete/{post}', [PostController::class, 'destroy'])->name('post.destroy');
+
+        //Banner/Slide
+        Route::get('/banner', [BannerController::class, 'index'])->name('banner.index');
+        Route::get('/banner/create', [BannerController::class, 'create'])->name('banner.create');
+        Route::post('/banner/create', [BannerController::class, 'store'])->name('banner.store');
+        Route::get('/banner/edit/{banner}', [BannerController::class, 'edit'])->name('banner.edit');
+        Route::post('/banner/edit/{banner}', [BannerController::class, 'update'])->name('banner.update');
+        Route::get('/banner/show/{banner}', [BannerController::class, 'show'])->name('banner.show');
+        Route::delete('/banner/delete/{banner}', [BannerController::class, 'destroy'])->name('banner.destroy');
     });
 
 });

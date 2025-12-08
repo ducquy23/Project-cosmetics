@@ -55,6 +55,10 @@ class ProductController extends Controller
         $arrimages = $data['images'];
         DB::beginTransaction();
         try {
+            // Tự động tạo slug nếu không có
+            if (empty($data['slug'])) {
+                $data['slug'] = \Illuminate\Support\Str::slug($data['name']);
+            }
             $data['price'] = $data['initial_price'] - ($data['initial_price'] * $data['discount'] / 100);
             unset($data['initial_price']);
             unset($data['images']);
@@ -92,6 +96,10 @@ class ProductController extends Controller
         $data = $request->validated();
         DB::beginTransaction();
         try {
+            // Tự động tạo slug nếu không có
+            if (empty($data['slug'])) {
+                $data['slug'] = \Illuminate\Support\Str::slug($data['name']);
+            }
             $data['price'] = $data['initial_price'] - ($data['initial_price'] * $data['discount'] / 100);
             unset($data['initial_price']);
             unset($data['images']);

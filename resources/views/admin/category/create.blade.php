@@ -9,8 +9,17 @@
                     @csrf
                     <div class="mb-3">
                         <label for="name" class="form-label">Tên</label>
-                        <input type="text" name="name" class="form-control" id="name">
+                        <input type="text" name="name" class="form-control" id="name" onkeyup="generateSlug(this.value)">
                         @error('name')
+                            <p class="text-danger">{{$message}}</p>
+                        @enderror
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="slug" class="form-label">Slug (URL)</label>
+                        <input type="text" name="slug" class="form-control" id="slug" placeholder="Tự động tạo từ tên">
+                        <small class="form-text text-muted">Để trống sẽ tự động tạo từ tên danh mục</small>
+                        @error('slug')
                             <p class="text-danger">{{$message}}</p>
                         @enderror
                     </div>
@@ -36,4 +45,23 @@
             </div>
         </div>
     </div>
+    
+    <script>
+        function generateSlug(name) {
+            if (document.getElementById('slug').value === '') {
+                // Chuyển đổi tiếng Việt có dấu thành không dấu
+                const slug = name
+                    .toLowerCase()
+                    .normalize('NFD')
+                    .replace(/[\u0300-\u036f]/g, '')
+                    .replace(/đ/g, 'd')
+                    .replace(/Đ/g, 'D')
+                    .replace(/[^a-z0-9\s-]/g, '')
+                    .replace(/\s+/g, '-')
+                    .replace(/-+/g, '-')
+                    .trim();
+                document.getElementById('slug').value = slug;
+            }
+        }
+    </script>
 @endsection

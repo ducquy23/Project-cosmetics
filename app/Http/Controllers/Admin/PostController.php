@@ -47,16 +47,24 @@ class PostController extends Controller
         $request->validate([
             'post_type_id' => 'required',
             'title' => 'required|string',
+            'slug' => 'nullable|unique:posts,slug|string|max:255',
             'content' => 'required|string',
             'thumbnail' => 'required',
         ]);
 
         DB::beginTransaction();
         try {
+            // Tự động tạo slug nếu không có
+            $slug = $request->slug;
+            if (empty($slug)) {
+                $slug = \Illuminate\Support\Str::slug($request->title);
+            }
+            
             $post = Post::create([
                 'post_type_id' => $request->post_type_id,
                 'admin_id' => Auth::guard('admin')->user()->id,
                 'title' => $request->title,
+                'slug' => $slug,
                 'content' => $request->content,
                 'view' => 0,
                 'thumbnail' => $this->saveImage($request->thumbnail),
@@ -105,13 +113,21 @@ class PostController extends Controller
         $request->validate([
             'post_type_id' => 'required',
             'title' => 'required|string',
+            'slug' => 'nullable|unique:posts,slug,' . $post->id . '|string|max:255',
             'content' => 'required|string',
             'thumbnail' => 'nullable',
         ]);
         DB::beginTransaction();
         try {
+            // Tự động tạo slug nếu không có
+            $slug = $request->slug;
+            if (empty($slug)) {
+                $slug = \Illuminate\Support\Str::slug($request->title);
+            }
+            
             $post->post_type_id = $request->post_type_id;
             $post->title = $request->title;
+            $post->slug = $slug;
             $post->content = $request->content;
             if($request->file('thumbnail')){
                 $post->thumbnail = $this->saveImage($request->thumbnail);

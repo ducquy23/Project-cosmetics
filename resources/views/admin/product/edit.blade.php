@@ -27,8 +27,17 @@
                         <label for="name" class="form-label">Tên 
                             <span class="text-danger">*</span> 
                         </label>
-                        <input type="text" class="form-control" name="name" id="name" value="{{old('name', $product->name)}}">
+                        <input type="text" class="form-control" name="name" id="name" value="{{old('name', $product->name)}}" onkeyup="generateSlug(this.value)">
                         @error('name')
+                            <p class="text-danger">{{$message}}</p>
+                        @enderror
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="slug" class="form-label">Slug (URL)</label>
+                        <input type="text" class="form-control" name="slug" id="slug" value="{{old('slug', $product->slug)}}" placeholder="Tự động tạo từ tên sản phẩm">
+                        <small class="form-text text-muted">Để trống sẽ tự động tạo từ tên sản phẩm</small>
+                        @error('slug')
                             <p class="text-danger">{{$message}}</p>
                         @enderror
                     </div>
@@ -307,5 +316,23 @@
             ]
         });
     </script>
-
+    
+    <script>
+        function generateSlug(name) {
+            if (document.getElementById('slug').value === '{{$product->slug ?? ''}}' || document.getElementById('slug').value === '') {
+                // Chuyển đổi tiếng Việt có dấu thành không dấu
+                const slug = name
+                    .toLowerCase()
+                    .normalize('NFD')
+                    .replace(/[\u0300-\u036f]/g, '')
+                    .replace(/đ/g, 'd')
+                    .replace(/Đ/g, 'D')
+                    .replace(/[^a-z0-9\s-]/g, '')
+                    .replace(/\s+/g, '-')
+                    .replace(/-+/g, '-')
+                    .trim();
+                document.getElementById('slug').value = slug;
+            }
+        }
+    </script>
 @endsection

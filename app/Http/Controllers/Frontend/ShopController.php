@@ -8,6 +8,7 @@ use App\Models\Product;
 use App\Models\Category;
 use App\Models\Brand;
 use App\Models\Post;
+use App\Models\Banner;
 
 class ShopController extends Controller
 {
@@ -16,7 +17,12 @@ class ShopController extends Controller
         $discountProducts = Product::where('discount', '>', 0)->orderByDesc('id')->limit(10)->get();
         $newPosts = Post::orderByDesc('id')->limit(3)->get();
         $latestProducts = Product::orderByDesc('id')->limit(8)->get();
-        return view('frontend.index', compact('discountProducts','topSellingProducts', 'newPosts', 'latestProducts'));
+        $slides = Banner::where('type', 'slide')
+                        ->where('status', 'active')
+                        ->orderBy('order')
+                        ->orderByDesc('id')
+                        ->get();
+        return view('frontend.index', compact('discountProducts','topSellingProducts', 'newPosts', 'latestProducts', 'slides'));
     }
 
     public function shop(Request $request){
@@ -41,13 +47,13 @@ class ShopController extends Controller
     }
 
     public function getProductByCategory(Category $category, Request $request){
-        
+        // Route model binding sẽ tự động tìm category theo slug nhờ getRouteKeyName() trong Model
         if($category->children->count() != 0){
             $child_cate_ids = $category->children()->pluck('id');
             $products = Product::whereIn('category_id', $child_cate_ids);
         }
         else{
-            $products = Product::where('category_id',$category->id);
+            $products = Product::where('category_id', $category->id);
         }
         $products = $this->filter($products, $request);
         $products = $this->sortBy($products, $request);

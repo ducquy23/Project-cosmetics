@@ -24,8 +24,16 @@
                     @csrf
                     <div class="mb-3">
                         <label for="title" class="form-label">Tiêu đề</label>
-                        <input type="text" name="title" class="form-control" id="title" value="{{$post->title}}">
+                        <input type="text" name="title" class="form-control" id="title" value="{{$post->title}}" onkeyup="generateSlug(this.value)">
                         @error('title')
+                            <p class="text-danger">{{$message}}</p>
+                        @enderror
+                    </div>
+                    <div class="mb-3">
+                        <label for="slug" class="form-label">Slug (URL)</label>
+                        <input type="text" name="slug" class="form-control" id="slug" value="{{old('slug', $post->slug)}}" placeholder="Tự động tạo từ tiêu đề">
+                        <small class="form-text text-muted">Để trống sẽ tự động tạo từ tiêu đề</small>
+                        @error('slug')
                             <p class="text-danger">{{$message}}</p>
                         @enderror
                     </div>
@@ -195,5 +203,24 @@
                 'PasteFromOfficeEnhanced'
             ]
         });
+    </script>
+    
+    <script>
+        function generateSlug(title) {
+            if (document.getElementById('slug').value === '{{$post->slug ?? ''}}' || document.getElementById('slug').value === '') {
+                // Chuyển đổi tiếng Việt có dấu thành không dấu
+                const slug = title
+                    .toLowerCase()
+                    .normalize('NFD')
+                    .replace(/[\u0300-\u036f]/g, '')
+                    .replace(/đ/g, 'd')
+                    .replace(/Đ/g, 'D')
+                    .replace(/[^a-z0-9\s-]/g, '')
+                    .replace(/\s+/g, '-')
+                    .replace(/-+/g, '-')
+                    .trim();
+                document.getElementById('slug').value = slug;
+            }
+        }
     </script>
 @endsection

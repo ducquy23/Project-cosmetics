@@ -49,13 +49,19 @@ class CategoryController extends Controller
     {
         $data = $request->validate([
             'name' => 'required|unique:categories,name|string',
+            'slug' => 'nullable|unique:categories,slug|string|max:255',
             'parent_id' => 'required|integer',
         ], [
             'name.required' => 'Vui lòng nhập tên danh mục.',
+            'slug.unique' => 'Slug đã tồn tại. Vui lòng chọn slug khác.',
             'parent_id.required' => 'Vui lòng nhập chọn danh mục cha.',
         ]);
         DB::beginTransaction();
         try {
+            // Tự động tạo slug nếu không có
+            if (empty($data['slug'])) {
+                $data['slug'] = \Illuminate\Support\Str::slug($data['name']);
+            }
             Category::create($data);
             DB::commit();
             return redirect()->route('category.index')->with('success', 'Thêm thành công!');
@@ -89,13 +95,19 @@ class CategoryController extends Controller
     {
         $data = $request->validate([
             'name' => 'required|string',
+            'slug' => 'nullable|unique:categories,slug,' . $category->id . '|string|max:255',
             'parent_id' => 'required|integer',
         ], [
             'name.required' => 'Vui lòng nhập tên danh mục.',
+            'slug.unique' => 'Slug đã tồn tại. Vui lòng chọn slug khác.',
             'parent_id.required' => 'Vui lòng nhập chọn danh mục cha.',
         ]);
         DB::beginTransaction();
         try {
+            // Tự động tạo slug nếu không có
+            if (empty($data['slug'])) {
+                $data['slug'] = \Illuminate\Support\Str::slug($data['name']);
+            }
             $category->update($data);
             DB::commit();
             return redirect()->route('category.index')->with('success', 'Cập nhật thành công!');
