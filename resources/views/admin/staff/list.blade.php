@@ -59,6 +59,7 @@
                                     </td>
                                     
                                     <td class="border-bottom-0 text-end">
+                                        <a href="{{route('staff.edit', $staff)}}" class="btn btn-outline-secondary m-1">Sửa</a>
                                         <a href="{{route('staff.destroy', $staff)}}" onclick="return confirm('Bạn có chắc muốn xóa tài khoản này không?')"
                                         class="btn btn-outline-danger m-1">Xóa</a>
                                     </td>

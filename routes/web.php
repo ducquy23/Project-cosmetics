@@ -96,6 +96,8 @@ Route::prefix('admin')->group(function () {
         Route::get('/staff', [StaffController::class, 'index'])->name('staff.index');
         Route::get('/staff/create', [StaffController::class, 'create'])->name('staff.create');
         Route::post('/staff/create', [StaffController::class, 'store'])->name('staff.store');
+        Route::get('/staff/edit/{staff}', [StaffController::class, 'edit'])->name('staff.edit');
+        Route::post('/staff/edit/{staff}', [StaffController::class, 'update'])->name('staff.update');
         Route::get('/staff/destroy/{staff}', [StaffController::class, 'destroy'])->name('staff.destroy');
 
         //Post Type
