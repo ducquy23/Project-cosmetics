@@ -13,6 +13,9 @@ use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\PostTypeController;
 use App\Http\Controllers\Admin\PostController;
 use App\Http\Controllers\Admin\BannerController;
+use App\Http\Controllers\Admin\SeoController;
+use App\Http\Controllers\SitemapController;
+use App\Http\Controllers\RobotsController;
 
 use App\Http\Controllers\Frontend\ShopController;
 use App\Http\Controllers\Frontend\CartController;
@@ -126,11 +129,19 @@ Route::prefix('admin')->group(function () {
         Route::post('/banner/edit/{banner}', [BannerController::class, 'update'])->name('banner.update');
         Route::get('/banner/show/{banner}', [BannerController::class, 'show'])->name('banner.show');
         Route::delete('/banner/delete/{banner}', [BannerController::class, 'destroy'])->name('banner.destroy');
+
+        //SEO
+        Route::get('/seo', [SeoController::class, 'index'])->name('seo.index');
+        Route::post('/seo', [SeoController::class, 'update'])->name('seo.update');
     });
 
 });
 
 //Frontend
+
+//SEO Routes
+Route::get('/sitemap.xml', [SitemapController::class, 'index'])->name('sitemap');
+Route::get('/robots.txt', [RobotsController::class, 'index'])->name('robots');
 
 Route::get('/', [ShopController::class, 'index'])->name('home');
 Route::get('/cua-hang', [ShopController::class, 'shop'])->name('shop');

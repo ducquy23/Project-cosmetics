@@ -139,6 +139,16 @@
                         </a>
                     </li>
                     @endif
+                    @if (Auth::guard('admin')->user()->role === 'Quản trị viên')
+                    <li class="sidebar-item">
+                        <a class="sidebar-link" href="{{route('seo.index')}}" aria-expanded="false">
+                                <span>
+                                    <i class="ti ti-search"></i>
+                                </span>
+                            <span class="hide-menu">Quản lý SEO</span>
+                        </a>
+                    </li>
+                    @endif
                     <li class="nav-small-cap">
                         <i class="ti ti-dots nav-small-cap-icon fs-4"></i>
                         <span class="hide-menu">Tài khoản</span>

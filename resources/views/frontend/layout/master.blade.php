@@ -4,11 +4,52 @@
     <!-- Basic Page Needs -->
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>MH Cosmetics - Mỹ phẩm chính hãng</title>
+    @php
+        $seoSettings = \App\Models\SeoSettings::getSettings();
+        $pageTitle = $seoSettings->meta_title ?? 'MH Cosmetics - Mỹ phẩm chính hãng';
+        $pageDescription = $seoSettings->meta_description ?? 'MH Cosmetics - Mỹ phẩm chính hãng';
+        $pageKeywords = $seoSettings->meta_keywords ?? 'MH Cosmetics, Cosmetics, Mỹ phẩm chính hãng';
+        $ogImage = $seoSettings->og_image ? asset('storage/' . $seoSettings->og_image) : asset('assets/frontend/img/home/logo-black.png');
+    @endphp
+    <title>@yield('title', $pageTitle)</title>
 
-    <meta name="keywords" content="MH Cosmetics, Cosmetics, Mỹ phẩm chính hãng">
-    <meta name="description" content="MH Cosmetics - Mỹ phẩm chính hãng">
-    <meta name="author" content="tivatheme">
+    <meta name="keywords" content="@yield('keywords', $pageKeywords)">
+    <meta name="description" content="@yield('description', $pageDescription)">
+    <meta name="author" content="{{$seoSettings->site_name ?? 'MH Cosmetics'}}">
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="{{url()->current()}}">
+    <meta property="og:title" content="@yield('title', $pageTitle)">
+    <meta property="og:description" content="@yield('description', $pageDescription)">
+    <meta property="og:image" content="@yield('og_image', $ogImage)">
+    <meta property="og:site_name" content="{{$seoSettings->site_name ?? 'MH Cosmetics'}}">
+    
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="{{url()->current()}}">
+    <meta property="twitter:title" content="@yield('title', $pageTitle)">
+    <meta property="twitter:description" content="@yield('description', $pageDescription)">
+    <meta property="twitter:image" content="@yield('og_image', $ogImage)">
+    
+    @if($seoSettings->google_analytics_id)
+    <!-- Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id={{$seoSettings->google_analytics_id}}"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', '{{$seoSettings->google_analytics_id}}');
+    </script>
+    @endif
+    
+    @if($seoSettings->google_search_console)
+    <meta name="google-site-verification" content="{{$seoSettings->google_search_console}}" />
+    @endif
+    
+    @if($seoSettings->custom_head_code)
+    {!! $seoSettings->custom_head_code !!}
+    @endif
 
     <!-- Mobile Meta -->
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
@@ -768,5 +809,19 @@
     <script src="/assets/frontend/js/theme.js"></script>
     <script src="/assets/frontend/js/my_script.js"></script>
     @stack('script')
+    
+    @php
+        $seoSettings = \App\Models\SeoSettings::getSettings();
+    @endphp
+    
+    @if($seoSettings->facebook_pixel)
+    <!-- Facebook Pixel Code -->
+    {!! $seoSettings->facebook_pixel !!}
+    @endif
+    
+    @if($seoSettings->custom_body_code)
+    <!-- Custom Body Code -->
+    {!! $seoSettings->custom_body_code !!}
+    @endif
 </body>
 </html>
