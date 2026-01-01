@@ -1,4 +1,14 @@
 @extends('frontend.layout.master')
+
+@php
+    use Illuminate\Support\Str;
+@endphp
+
+@section('title', $post->title . ' - MH Cosmetics')
+@section('description', Str::limit(strip_tags($post->content), 160))
+@section('keywords', $post->title . ', ' . ($post->postType->name ?? ''))
+@section('og_image', $post->thumbnail ?? '')
+
 @section('content')
 @section('page-id', 'blog-detail')
 @section('page-class', 'blog')
@@ -74,13 +84,13 @@
                                                     @foreach($relatedPosts as $post)
                                                     <div class="col-md-4">
                                                         <div class="hover-after">
-                                                            <a href="{{route('blog.detail', $post)}}">
+                                                            <a href="{{route_blog_detail($post)}}">
                                                                 <img src="{{$post->thumbnail}}" alt="img" class="img-fluid">
                                                             </a>
                                                         </div>
                                                         <div class="late-item">
                                                             <p class="content-title">
-                                                                <a href="{{route('blog.detail', $post)}}">{{$post->title}}</a>
+                                                                <a href="{{route_blog_detail($post)}}">{{$post->title}}</a>
                                                             </p>
                                                             <p class="description">
                                                                 {!! $post->shortContent($post->content) !!}

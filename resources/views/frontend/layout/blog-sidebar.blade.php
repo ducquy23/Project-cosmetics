@@ -19,7 +19,7 @@
             @foreach($topPosts as $post)
             <div>
                 <div class="late-item first-child">
-                    <a href="{{route('blog.detail', $post)}}">
+                    <a href="{{route_blog_detail($post)}}">
                         <p class="content-title">{{$post->title}}</p>
                     </a>
                     <span>
@@ -31,7 +31,7 @@
                         {!! $post->shortContent($post->content, 80) !!}
                     </p>
                     <p class="remove">
-                        <a href="{{route('blog.detail', $post)}}">Xem thêm</a>
+                        <a href="{{route_blog_detail($post)}}">Xem thêm</a>
                     </p>
                 </div>
             </div>

@@ -23778,3 +23778,7 @@ footer [class~=title-block], #home4 footer [class~=inner-footer] [class~=footer-
     border-color: rgba(255, 255, 255, 0.1);
 }
 
+.header-top .container {
+    max-width: 1300px;
+}
+

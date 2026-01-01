@@ -41,14 +41,14 @@
                                                                 <!--  product left content: image-->
                                                                 <div class="product-line-grid-left col-md-2">
                                                                     <span class="product-image media-middle">
-                                                                        <a href="{{route('product', $cart['product_id'])}}">
+                                                                        <a href="{{route_product($cart['slug'] ?? $cart['product_id'])}}">
                                                                             <img class="img-fluid" src="{{$cart['image']}}" alt="product">
                                                                         </a>
                                                                     </span>
                                                                 </div>
                                                                 <div class="product-line-grid-body col-md-6">
                                                                     <div class="product-line-info">
-                                                                        <a class="label" href="{{route('product', $cart['product_id'])}}" 
+                                                                        <a class="label" href="{{route_product($cart['slug'] ?? $cart['product_id'])}}"
                                                                             data-id_customization="0">{{$cart['name']}}</a>
                                                                     </div>
                                                                     <div class="product-line-info product-price">
@@ -92,27 +92,38 @@
                                                     @endforeach
                                                 </ul>
                                             @else
-                                                
+                                                <div class="alert alert-info">
+                                                    <p>Giỏ hàng của bạn đang trống.</p>
+                                                </div>
                                             @endif
-                                            
+
+                                        </div>
+                                        <div class="checkout cart-summary-actions">
+                                            <a href="{{route('checkout')}}" class="continue btn btn-primary btn-block" style="display: block !important; visibility: visible !important;">
+                                                THANH TOÁN
+                                            </a>
                                         </div>
                                     </div>
-                                    <a href="{{route('checkout')}}" class="continue btn btn-primary pull-xs-right">
-                                        Thanh toán
-                                    </a>
                                 </div>
                                 <div class="cart-grid-right col-xs-12 col-lg-3">
+                                    @php
+                                        $cartItems = session('cart', []);
+                                        $cartCount = is_array($cartItems) ? count($cartItems) : 0;
+                                        $totalPrice = session('total_price', 0);
+                                    @endphp
+                                    @if ($cartCount > 0)
                                     <div class="cart-summary">
                                         <div class="cart-detailed-totals">
                                             <div class="cart-summary-products">
-                                                <div class="summary-label">Có {{count(session('cart'))}} sản phẩm trong giỏ</div>
+                                                <div class="summary-label">Có {{$cartCount}} sản phẩm trong giỏ</div>
                                             </div>
                                             <div class="cart-summary-line cart-total">
                                                 <span class="label">Tổng tiền:</span>
-                                                <span class="value">{{convertPrice(session('total_price'))}}</span>
+                                                <span class="value">{{convertPrice($totalPrice)}}</span>
                                             </div>
                                         </div>
                                     </div>
+                                    @endif
                                     <div id="block-reassurance">
                                         <ul>
                                             <li>
@@ -138,13 +149,68 @@
                                 </div>
                             </div>
                         </section>
+
                     </div>
                 </div>
             </div>
         </div>
     </div>
-    
+
 @endsection
+
+@push('css')
+<style>
+    .cart-summary {
+        background: #f8f9fa;
+        padding: 20px;
+        border-radius: 5px;
+        margin-bottom: 20px;
+    }
+    .checkout.cart-summary-actions {
+        max-width: 150px;
+        float: right;
+        margin-top: 20px;
+    }
+    .checkout .btn-primary,
+    .checkout .btn-primary.continue {
+        background-color: #000 !important;
+        border-color: #000 !important;
+        color: #fff !important;
+        padding: 8px 15px !important;
+        font-size: 14px !important;
+        font-weight: bold !important;
+        text-transform: uppercase !important;
+        width: 100% !important;
+        display: block !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+        text-align: center !important;
+        text-decoration: none !important;
+    }
+    .checkout .btn-primary:hover,
+    .checkout .btn-primary.continue:hover {
+        background-color: #333 !important;
+        border-color: #333 !important;
+        color: #fff !important;
+    }
+    .cart-summary-actions {
+        display: block !important;
+        visibility: visible !important;
+    }
+    .cart-grid-right {
+        position: sticky;
+        top: 100px;
+        align-self: flex-start;
+    }
+    @media (max-width: 991px) {
+        .cart-grid-right {
+            position: relative;
+            top: 0;
+            margin-top: 20px;
+        }
+    }
+</style>
+@endpush
 
 @push('script')
 <script>

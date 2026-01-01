@@ -316,7 +316,7 @@
             ]
         });
     </script>
-    
+
     <script>
         function generateSlug(name) {
             if (document.getElementById('slug').value === '{{$product->slug ?? ''}}' || document.getElementById('slug').value === '') {

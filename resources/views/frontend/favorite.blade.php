@@ -52,7 +52,7 @@
                                                 <tr id="wishlist_1">
                                                     <td>{{$key+1}}</td>
                                                     <td>
-                                                        <a href="{{route('product', $product)}}">{{$product->name}}</a>
+                                                        <a href="{{route_product($product)}}">{{$product->name}}</a>
                                                     </td>
                                                     <td class="bold align_center">
                                                         @if ($product->quantity > 0)
@@ -62,7 +62,7 @@
                                                         @endif
                                                     </td>
                                                     <td>
-                                                        <a href="{{route('product', $product)}}">Chi tiết</a>
+                                                        <a href="{{route_product($product)}}">Chi tiết</a>
                                                     </td>
                                                     <td class="wishlist_delete">
                                                         <span onclick="confirmDelete({{$product->id}})">Xóa</span>

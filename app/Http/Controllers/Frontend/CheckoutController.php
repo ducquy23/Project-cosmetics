@@ -37,7 +37,7 @@ class CheckoutController extends Controller
 
 
         $data['total_price'] = session('total_price');
-        $data['user_id'] = \Auth::id();
+        $data['user_id'] = \Auth::id(); // null nếu là guest
         $data['status'] = 2; // trang thai chờ xác nhận
 
         /* Nếu thanh toán COD */
@@ -48,7 +48,12 @@ class CheckoutController extends Controller
                 $this->createOrderDetail($order);
                 DB::commit();
 
-                return redirect()->route('account')->with('success_message', 'Đặt hàng thành công, đơn hàng sẽ được giao trong vòng vài ngày tới.');
+                // Redirect based on authentication status
+                if (\Auth::check()) {
+                    return redirect()->route('account')->with('success_message', 'Đặt hàng thành công, đơn hàng sẽ được giao trong vòng vài ngày tới.');
+                } else {
+                    return redirect()->route('home')->with('success_message', 'Đặt hàng thành công, đơn hàng sẽ được giao trong vòng vài ngày tới.');
+                }
 
             } catch (\Throwable $e) {
                 DB::rollback();
@@ -166,7 +171,12 @@ class CheckoutController extends Controller
             //00: TH thành công
             if($vnp_ResponseCode == 00){
                 $this->createOrderDetail($order);
-                return redirect()->route('account')->with('success_message', 'Đặt hàng thành công, đơn hàng sẽ được giao trong vòng vài ngày tới.');
+                // Redirect based on authentication status
+                if (\Auth::check()) {
+                    return redirect()->route('account')->with('success_message', 'Đặt hàng thành công, đơn hàng sẽ được giao trong vòng vài ngày tới.');
+                } else {
+                    return redirect()->route('home')->with('success_message', 'Đặt hàng thành công, đơn hàng sẽ được giao trong vòng vài ngày tới.');
+                }
 
             }elseif($vnp_ResponseCode == 24){ //24: Hủy thanh toán
                 $order->delete();

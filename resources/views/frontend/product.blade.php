@@ -1,4 +1,14 @@
 @extends('frontend.layout.master')
+
+@php
+    use Illuminate\Support\Str;
+@endphp
+
+@section('title', $product->name . ' - MH Cosmetics')
+@section('description', Str::limit(strip_tags($product->description), 160))
+@section('keywords', $product->name . ', ' . ($product->category->name ?? '') . ', ' . ($product->brand->name ?? ''))
+@section('og_image', $product->firstImage() ? $product->firstImage()->image : '')
+
 @section('content')
 @section('page-id', 'product-detail')
 
@@ -73,7 +83,7 @@
                                                     <div class="item col-md-12">
                                                         <div class="product-miniature item-one first-item d-flex">
                                                             <div class="thumbnail-container border">
-                                                                <a href="{{route('product', $topProduct)}}">
+                                                                <a href="{{route_product($topProduct)}}">
                                                                     <img class="img-fluid image-cover"
                                                                         src="{{$topProduct->firstImage()->image}}" alt="img">
                                                                     @if ($topProduct->secondImage())
@@ -88,7 +98,7 @@
                                                             <div class="product-description">
                                                                 <div class="product-groups">
                                                                     <div class="product-title">
-                                                                        <a href="{{route('product', $topProduct)}}">{{$topProduct->name}}</a>
+                                                                        <a href="{{route_product($topProduct)}}">{{$topProduct->name}}</a>
                                                                     </div>
                                                                     <div class="product-group-price">
                                                                         <div class="product-price-and-shipping">

@@ -1,4 +1,15 @@
 @extends('frontend.layout.master')
+
+@php
+    $seoSettings = \App\Models\SeoSettings::getSettings();
+    $pageTitle = isset($category) ? ($category->name . ' - MH Cosmetics') : ('Cửa hàng - MH Cosmetics');
+    $pageDescription = isset($category) ? ('Danh mục ' . $category->name . ' - ' . $seoSettings->meta_description) : ($seoSettings->meta_description ?? 'Cửa hàng mỹ phẩm chính hãng');
+@endphp
+
+@section('title', $pageTitle)
+@section('description', $pageDescription)
+@section('keywords', isset($category) ? $category->name : 'Cửa hàng, Mỹ phẩm')
+
 @section('content')
 @section('page-id', 'product-sidebar-left')
 @section('page-class', 'product-grid-sidebar-left')

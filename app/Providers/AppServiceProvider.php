@@ -5,8 +5,6 @@ namespace App\Providers;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Pagination\Paginator;
-use App\Models\Product;
-use DB;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -28,5 +26,8 @@ class AppServiceProvider extends ServiceProvider
         }
         Paginator::useBootstrapFive();
         Paginator::useBootstrapFour();
+        
+        // Load helper functions trực tiếp
+        require_once app_path('Helpers/RouteHelper.php');
     }
 }

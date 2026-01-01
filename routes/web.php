@@ -14,6 +14,11 @@ use App\Http\Controllers\Admin\PostTypeController;
 use App\Http\Controllers\Admin\PostController;
 use App\Http\Controllers\Admin\BannerController;
 use App\Http\Controllers\Admin\SeoController;
+use App\Http\Controllers\Admin\FooterController;
+use App\Http\Controllers\Admin\ContactController;
+use App\Http\Controllers\Admin\PageController;
+use App\Http\Controllers\Admin\MenuController;
+use App\Http\Controllers\Admin\HomepageController;
 use App\Http\Controllers\SitemapController;
 use App\Http\Controllers\RobotsController;
 
@@ -24,6 +29,7 @@ use App\Http\Controllers\Frontend\AuthUserController;
 use App\Http\Controllers\Frontend\AccountController;
 use App\Http\Controllers\Frontend\FavoriteController;
 use App\Http\Controllers\Frontend\BlogController;
+use App\Http\Controllers\SlugController;
 
 /*
 |--------------------------------------------------------------------------
@@ -133,6 +139,37 @@ Route::prefix('admin')->group(function () {
         //SEO
         Route::get('/seo', [SeoController::class, 'index'])->name('seo.index');
         Route::post('/seo', [SeoController::class, 'update'])->name('seo.update');
+
+        //Menu
+        Route::get('/menu', [MenuController::class, 'index'])->name('menu.index');
+        Route::get('/menu/create', [MenuController::class, 'create'])->name('menu.create');
+        Route::post('/menu/create', [MenuController::class, 'store'])->name('menu.store');
+        Route::get('/menu/edit/{menu}', [MenuController::class, 'edit'])->name('menu.edit');
+        Route::post('/menu/edit/{menu}', [MenuController::class, 'update'])->name('menu.update');
+        Route::delete('/menu/delete/{menu}', [MenuController::class, 'destroy'])->name('menu.destroy');
+
+        //Homepage
+        Route::get('/homepage', [HomepageController::class, 'index'])->name('admin.homepage.index');
+        Route::get('/homepage/edit/{type}', [HomepageController::class, 'edit'])->name('admin.homepage.edit');
+        Route::post('/homepage/edit/{type}', [HomepageController::class, 'update'])->name('admin.homepage.update');
+        Route::post('/homepage/upload-image', [HomepageController::class, 'uploadImage'])->name('admin.homepage.upload-image');
+
+        //Footer
+        Route::get('/footer', [FooterController::class, 'index'])->name('footer.index');
+        Route::post('/footer', [FooterController::class, 'update'])->name('footer.update');
+        Route::post('/footer/remove-payment-image', [FooterController::class, 'removePaymentImage'])->name('footer.remove-payment-image');
+
+        //Contact
+        Route::get('/contact', [ContactController::class, 'index'])->name('contact.index');
+        Route::post('/contact', [ContactController::class, 'update'])->name('contact.update');
+        Route::get('/contact/messages', [ContactController::class, 'messages'])->name('contact.messages');
+        Route::get('/contact/messages/{message}', [ContactController::class, 'show'])->name('contact.show');
+        Route::post('/contact/messages/{message}/status', [ContactController::class, 'updateStatus'])->name('contact.updateStatus');
+        Route::delete('/contact/messages/{message}', [ContactController::class, 'destroy'])->name('contact.destroy');
+
+        //Page
+        Route::get('/page/{type}/edit', [PageController::class, 'edit'])->name('page.edit');
+        Route::post('/page/{type}', [PageController::class, 'update'])->name('page.update');
     });
 
 });
@@ -147,8 +184,17 @@ Route::get('/', [ShopController::class, 'index'])->name('home');
 Route::get('/cua-hang', [ShopController::class, 'shop'])->name('shop');
 Route::get('/danh-muc/{category}', [ShopController::class, 'getProductByCategory'])->name('category');
 // Route::get('/tac-gia/{author}', [ShopController::class, 'getProductByAuthor'])->name('author');
-Route::get('/san-pham/{product}', [ShopController::class, 'product'])->name('product');
 Route::get('/lien-he', [ShopController::class, 'contact'])->name('contact');
+Route::post('/lien-he', [ShopController::class, 'submitContact'])->name('contact.submit');
+
+//Search
+Route::get('/tim-kiem', [ShopController::class, 'search'])->name('search');
+
+//Page
+Route::get('/gioi-thieu', function() {
+    $page = \App\Models\Page::getPage('about');
+    return view('frontend.about', compact('page'));
+})->name('about');
 
 //Blog
 Route::get('/bai-viet', [BlogController::class, 'blog'])->name('blog');
@@ -165,6 +211,8 @@ Route::middleware(['guest:web'])->group(function () {
     Route::post('/dang-nhap', [AuthUserController::class, 'loginPost'])->name('loginPost');
     Route::get('/dang-ky', [AuthUserController::class, 'register'])->name('register');
     Route::post('/dang-ky', [AuthUserController::class, 'registerPost'])->name('registerPost');
+    Route::get('/auth/google', [AuthUserController::class, 'redirectToGoogle'])->name('auth.google');
+    Route::get('/auth/google/callback', [AuthUserController::class, 'handleGoogleCallback'])->name('auth.google.callback');
 
     Route::get('/forgot-password', [AuthUserController::class, 'forgotPassword'])->name('password.request');
     Route::post('/forgot-password', [AuthUserController::class, 'forgotPasswordPost'])->name('password.email');
@@ -180,10 +228,6 @@ Route::middleware(['auth:web'])->group(function () {
     Route::get('/yeu-thich/{product}', [FavoriteController::class, 'add'])->name('favorite.add');
     Route::get('/yeu-thich/delete/{product_id}', [FavoriteController::class, 'delete'])->name('favorite.delete');
 
-    Route::get('/dat-hang', [CheckoutController::class, 'index'])->name('checkout');
-    Route::post('/checkout', [CheckoutController::class, 'checkout'])->name('checkoutPost');
-    Route::get('/checkout/vnPayCheck', [CheckoutController::class, 'vnPayCheck'])->name('checkout.vnpay');
-
     Route::get('/tai-khoan', [AccountController::class, 'account'])->name('account');
     Route::post('/tai-khoan', [AccountController::class, 'updateAccount'])->name('account.update');
 
@@ -197,6 +241,14 @@ Route::middleware(['auth:web'])->group(function () {
     Route::post('/doi-mat-khau', [AccountController::class, 'updatePassword'])->name('account.update-password');
 
 });
+
+// Checkout routes - allow guest checkout
+Route::get('/dat-hang', [CheckoutController::class, 'index'])->name('checkout');
+Route::post('/checkout', [CheckoutController::class, 'checkout'])->name('checkoutPost');
+Route::get('/checkout/vnPayCheck', [CheckoutController::class, 'vnPayCheck'])->name('checkout.vnpay');
+
+Route::get('/{slug}', [SlugController::class, 'index'])
+    ->where('slug', '[a-z0-9\-]+');
 
 Route::fallback(function () {
     return view('frontend.404');

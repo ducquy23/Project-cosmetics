@@ -322,7 +322,7 @@
             ]
         });
     </script>
-    
+
     <script>
         function generateSlug(name) {
             if (document.getElementById('slug').value === '') {

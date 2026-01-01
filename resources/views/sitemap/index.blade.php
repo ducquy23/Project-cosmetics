@@ -47,7 +47,7 @@
     <!-- Sản phẩm -->
     @foreach($products as $product)
     <url>
-        <loc>{{$baseUrl}}/san-pham/{{$product->slug}}</loc>
+        <loc>{{$baseUrl}}/{{$product->slug}}</loc>
         <lastmod>{{$product->updated_at->format('Y-m-d')}}</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.8</priority>
@@ -57,7 +57,7 @@
     <!-- Bài viết -->
     @foreach($posts as $post)
     <url>
-        <loc>{{$baseUrl}}/bai-viet/{{$post->slug}}</loc>
+        <loc>{{$baseUrl}}/{{$post->slug}}</loc>
         <lastmod>{{$post->updated_at->format('Y-m-d')}}</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.6</priority>

@@ -23,6 +23,39 @@
                 </div>
 
                 <div class="mb-3">
+                    <label for="logo" class="form-label">Logo Website</label>
+                    <input type="file" class="form-control" name="logo" id="logo" accept="image/*">
+                    @if($seoSettings->logo)
+                        <div class="mt-2">
+                            <p class="text-muted">Logo hiện tại:</p>
+                            <img src="{{asset('storage/' . $seoSettings->logo)}}" alt="Logo" class="rounded-1" style="max-width: 200px;">
+                        </div>
+                    @endif
+                    <small class="form-text text-muted">Logo chính của website (khuyến nghị: PNG với nền trong suốt).</small>
+                    @error('logo')
+                        <p class="text-danger">{{$message}}</p>
+                    @enderror
+                </div>
+
+                <div class="mb-3">
+                    <label for="logo_mobile" class="form-label">Logo Mobile</label>
+                    <input type="file" class="form-control" name="logo_mobile" id="logo_mobile" accept="image/*">
+                    @if($seoSettings->logo_mobile)
+                        <div class="mt-2">
+                            <p class="text-muted">Logo mobile hiện tại:</p>
+                            <img src="{{asset('storage/' . $seoSettings->logo_mobile)}}" alt="Logo Mobile" class="rounded-1" style="max-width: 200px;">
+                        </div>
+                    @endif
+                    <small class="form-text text-muted">Logo cho phiên bản mobile (khuyến nghị: PNG với nền trong suốt).</small>
+                    @error('logo_mobile')
+                        <p class="text-danger">{{$message}}</p>
+                    @enderror
+                </div>
+
+                <hr>
+                <h6 class="fw-semibold mb-3">SEO Settings</h6>
+
+                <div class="mb-3">
                     <label for="meta_title" class="form-label">Meta Title (Mặc định)</label>
                     <input type="text" class="form-control" name="meta_title" id="meta_title" value="{{old('meta_title', $seoSettings->meta_title)}}" maxlength="60">
                     <small class="form-text text-muted">Tối đa 60 ký tự. Hiển thị trên tab trình duyệt và kết quả tìm kiếm.</small>
@@ -145,4 +178,5 @@
     </div>
 </div>
 @endsection
+
 

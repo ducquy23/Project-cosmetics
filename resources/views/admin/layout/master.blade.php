@@ -4,6 +4,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="Permissions-Policy" content="unload=*">
     <title>Furnitica - Quản trị viên</title>
     <link rel="shortcut icon" type="image/png" href="/assets/admin/images/logos/favicon.png"/>
     <link rel="stylesheet" href="/assets/admin/css/styles.min.css"/>
@@ -30,7 +31,7 @@
                 <ul id="sidebarnav">
                     <li class="nav-small-cap">
                         <i class="ti ti-dots nav-small-cap-icon fs-4"></i>
-                        <span class="hide-menu">Quản lý</span>
+                        <span class="hide-menu">Tổng quan</span>
                     </li>
                     @if (Auth::guard('admin')->user()->role === 'Quản trị viên')
                         <li class="sidebar-item">
@@ -42,6 +43,11 @@
                             </a>
                         </li>
                     @endif
+                    
+                    <li class="nav-small-cap">
+                        <i class="ti ti-dots nav-small-cap-icon fs-4"></i>
+                        <span class="hide-menu">Sản phẩm</span>
+                    </li>
                     @if (Auth::guard('admin')->user()->role === 'Quản trị viên')
                         <li class="sidebar-item">
                             <a class="sidebar-link" href="{{route('category.index')}}" aria-expanded="false">
@@ -53,11 +59,10 @@
                         </li>
                     @endif
                     @if (Auth::guard('admin')->user()->role === 'Quản trị viên')
-
                         <li class="sidebar-item">
                             <a class="sidebar-link" href="{{route('brand.index')}}" aria-expanded="false">
                                 <span>
-                                    <i class="ti ti-ballpen"></i>
+                                    <i class="ti ti-brand"></i>
                                 </span>
                                 <span class="hide-menu">Thương hiệu</span>
                             </a>
@@ -67,7 +72,7 @@
                         <li class="sidebar-item">
                             <a class="sidebar-link" href="{{route('origin.index')}}" aria-expanded="false">
                                 <span>
-                                    <i class="ti ti-table-export"></i>
+                                    <i class="ti ti-world"></i>
                                 </span>
                                 <span class="hide-menu">Nơi sản xuất</span>
                             </a>
@@ -77,12 +82,38 @@
                         <li class="sidebar-item">
                             <a class="sidebar-link" href="{{route('product.index')}}" aria-expanded="false">
                                 <span>
-                                    <i class="ti ti-book-2"></i>
+                                    <i class="ti ti-package"></i>
                                 </span>
                                 <span class="hide-menu">Sản phẩm</span>
                             </a>
                         </li>
                     @endif
+                    
+                    <li class="nav-small-cap">
+                        <i class="ti ti-dots nav-small-cap-icon fs-4"></i>
+                        <span class="hide-menu">Đơn hàng & Khách hàng</span>
+                    </li>
+                    <li class="sidebar-item">
+                        <a class="sidebar-link" href="{{route('order.index')}}" aria-expanded="false">
+                            <span>
+                                <i class="ti ti-file-invoice"></i>
+                            </span>
+                            <span class="hide-menu">Đơn hàng</span>
+                        </a>
+                    </li>
+                    <li class="sidebar-item">
+                        <a class="sidebar-link" href="{{route('user.index')}}" aria-expanded="false">
+                            <span>
+                                <i class="ti ti-users"></i>
+                            </span>
+                            <span class="hide-menu">Khách hàng</span>
+                        </a>
+                    </li>
+                    
+                    <li class="nav-small-cap">
+                        <i class="ti ti-dots nav-small-cap-icon fs-4"></i>
+                        <span class="hide-menu">Hệ thống</span>
+                    </li>
                     @if (Auth::guard('admin')->user()->role === 'Quản trị viên')
                         <li class="sidebar-item">
                             <a class="sidebar-link" href="{{route('staff.index')}}" aria-expanded="false">
@@ -93,61 +124,115 @@
                             </a>
                         </li>
                     @endif
-                    <li class="sidebar-item">
-                        <a class="sidebar-link" href="{{route('order.index')}}" aria-expanded="false">
-                                <span>
-                                    <i class="ti ti-file-invoice"></i>
-                                </span>
-                            <span class="hide-menu">Đơn hàng</span>
-                        </a>
-                    </li>
-                    <li class="sidebar-item">
-                        <a class="sidebar-link" href="{{route('user.index')}}" aria-expanded="false">
-                                <span>
-                                    <i class="ti ti-users"></i>
-                                </span>
-                            <span class="hide-menu">Khách hàng</span>
-                        </a>
+                    
+                    <li class="nav-small-cap">
+                        <i class="ti ti-dots nav-small-cap-icon fs-4"></i>
+                        <span class="hide-menu">Nội dung</span>
                     </li>
                     @if (Auth::guard('admin')->user()->role === 'Quản trị viên')
-                    <li class="sidebar-item">
-                        <a class="sidebar-link" href="{{route('post_type.index')}}" aria-expanded="false">
+                        <li class="sidebar-item">
+                            <a class="sidebar-link" href="{{route('post_type.index')}}" aria-expanded="false">
                                 <span>
-                                    <i class="ti ti-category"></i>
+                                    <i class="ti ti-folders"></i>
                                 </span>
-                            <span class="hide-menu">Thể loại bài viết</span>
-                        </a>
-                    </li>
+                                <span class="hide-menu">Thể loại bài viết</span>
+                            </a>
+                        </li>
                     @endif
                     @if (Auth::guard('admin')->user()->role === 'Quản trị viên')
-                    <li class="sidebar-item">
-                        <a class="sidebar-link" href="{{route('post.index')}}" aria-expanded="false">
+                        <li class="sidebar-item">
+                            <a class="sidebar-link" href="{{route('post.index')}}" aria-expanded="false">
                                 <span>
-                                    <i class="ti ti-ballpen"></i>
+                                    <i class="ti ti-news"></i>
                                 </span>
-                            <span class="hide-menu">Bài viết</span>
-                        </a>
-                    </li>
+                                <span class="hide-menu">Bài viết</span>
+                            </a>
+                        </li>
                     @endif
                     @if (Auth::guard('admin')->user()->role === 'Quản trị viên')
-                    <li class="sidebar-item">
-                        <a class="sidebar-link" href="{{route('banner.index')}}" aria-expanded="false">
+                        <li class="sidebar-item">
+                            <a class="sidebar-link" href="{{route('banner.index')}}" aria-expanded="false">
                                 <span>
                                     <i class="ti ti-photo"></i>
                                 </span>
-                            <span class="hide-menu">Banner / Slide</span>
-                        </a>
-                    </li>
+                                <span class="hide-menu">Banner / Slide</span>
+                            </a>
+                        </li>
                     @endif
+                    
+                    <li class="nav-small-cap">
+                        <i class="ti ti-dots nav-small-cap-icon fs-4"></i>
+                        <span class="hide-menu">Cài đặt Website</span>
+                    </li>
                     @if (Auth::guard('admin')->user()->role === 'Quản trị viên')
-                    <li class="sidebar-item">
-                        <a class="sidebar-link" href="{{route('seo.index')}}" aria-expanded="false">
+                        <li class="sidebar-item">
+                            <a class="sidebar-link" href="{{route('seo.index')}}" aria-expanded="false">
                                 <span>
                                     <i class="ti ti-search"></i>
                                 </span>
-                            <span class="hide-menu">Quản lý SEO</span>
-                        </a>
-                    </li>
+                                <span class="hide-menu">Quản lý SEO</span>
+                            </a>
+                        </li>
+                    @endif
+                    @if (Auth::guard('admin')->user()->role === 'Quản trị viên')
+                        <li class="sidebar-item">
+                            <a class="sidebar-link" href="{{route('footer.index')}}" aria-expanded="false">
+                                <span>
+                                    <i class="ti ti-layout"></i>
+                                </span>
+                                <span class="hide-menu">Quản lý Footer</span>
+                            </a>
+                        </li>
+                    @endif
+                    @if (Auth::guard('admin')->user()->role === 'Quản trị viên')
+                        <li class="sidebar-item">
+                            <a class="sidebar-link" href="{{route('menu.index')}}" aria-expanded="false">
+                                <span>
+                                    <i class="ti ti-menu-2"></i>
+                                </span>
+                                <span class="hide-menu">Quản lý Menu</span>
+                            </a>
+                        </li>
+                    @endif
+                    @if (Auth::guard('admin')->user()->role === 'Quản trị viên')
+                        <li class="sidebar-item">
+                            <a class="sidebar-link" href="{{route('admin.homepage.index')}}" aria-expanded="false">
+                                <span>
+                                    <i class="ti ti-home"></i>
+                                </span>
+                                <span class="hide-menu">Quản lý Trang chủ</span>
+                            </a>
+                        </li>
+                    @endif
+                    @if (Auth::guard('admin')->user()->role === 'Quản trị viên')
+                        <li class="sidebar-item">
+                            <a class="sidebar-link" href="{{route('page.edit', 'about')}}" aria-expanded="false">
+                                <span>
+                                    <i class="ti ti-file-text"></i>
+                                </span>
+                                <span class="hide-menu">Trang Giới thiệu</span>
+                            </a>
+                        </li>
+                    @endif
+                    @if (Auth::guard('admin')->user()->role === 'Quản trị viên')
+                        <li class="sidebar-item">
+                            <a class="sidebar-link" href="{{route('contact.index')}}" aria-expanded="false">
+                                <span>
+                                    <i class="ti ti-mail"></i>
+                                </span>
+                                <span class="hide-menu">Cài đặt Liên hệ</span>
+                            </a>
+                        </li>
+                    @endif
+                    @if (Auth::guard('admin')->user()->role === 'Quản trị viên')
+                        <li class="sidebar-item">
+                            <a class="sidebar-link" href="{{route('contact.messages')}}" aria-expanded="false">
+                                <span>
+                                    <i class="ti ti-message"></i>
+                                </span>
+                                <span class="hide-menu">Tin nhắn Liên hệ</span>
+                            </a>
+                        </li>
                     @endif
                     <li class="nav-small-cap">
                         <i class="ti ti-dots nav-small-cap-icon fs-4"></i>
