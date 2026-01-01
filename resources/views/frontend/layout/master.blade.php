@@ -378,13 +378,13 @@
                                                     @foreach (session('cart') as $cart)
                                                         <tr>
                                                             <td class="product-image">
-                                                                <a href="{{route('product', $cart['product_id'])}}">
+                                                                <a href="{{route('product', $cart['slug'] ?? $cart['product_id'])}}">
                                                                     <img src="{{$cart['image']}}" alt="Product">
                                                                 </a>
                                                             </td>
                                                             <td>
                                                                 <div class="product-name">
-                                                                    <a href="{{route('product', $cart['product_id'])}}">{{$cart['name']}}</a>
+                                                                    <a href="{{route('product', $cart['slug'] ?? $cart['product_id'])}}">{{$cart['name']}}</a>
                                                                 </div>
                                                                 <div>
                                                                     {{$cart['quantity']}} x
