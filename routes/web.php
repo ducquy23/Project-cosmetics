@@ -14,6 +14,9 @@ use App\Http\Controllers\Admin\PostTypeController;
 use App\Http\Controllers\Admin\PostController;
 use App\Http\Controllers\Admin\BannerController;
 use App\Http\Controllers\Admin\SeoController;
+use App\Http\Controllers\Admin\FooterController;
+use App\Http\Controllers\Admin\ContactController;
+use App\Http\Controllers\Admin\PageController;
 use App\Http\Controllers\SitemapController;
 use App\Http\Controllers\RobotsController;
 
@@ -133,6 +136,22 @@ Route::prefix('admin')->group(function () {
         //SEO
         Route::get('/seo', [SeoController::class, 'index'])->name('seo.index');
         Route::post('/seo', [SeoController::class, 'update'])->name('seo.update');
+
+        //Footer
+        Route::get('/footer', [FooterController::class, 'index'])->name('footer.index');
+        Route::post('/footer', [FooterController::class, 'update'])->name('footer.update');
+
+        //Contact
+        Route::get('/contact', [ContactController::class, 'index'])->name('contact.index');
+        Route::post('/contact', [ContactController::class, 'update'])->name('contact.update');
+        Route::get('/contact/messages', [ContactController::class, 'messages'])->name('contact.messages');
+        Route::get('/contact/messages/{message}', [ContactController::class, 'show'])->name('contact.show');
+        Route::post('/contact/messages/{message}/status', [ContactController::class, 'updateStatus'])->name('contact.updateStatus');
+        Route::delete('/contact/messages/{message}', [ContactController::class, 'destroy'])->name('contact.destroy');
+
+        //Page
+        Route::get('/page/{type}/edit', [PageController::class, 'edit'])->name('page.edit');
+        Route::post('/page/{type}', [PageController::class, 'update'])->name('page.update');
     });
 
 });
@@ -149,6 +168,13 @@ Route::get('/danh-muc/{category}', [ShopController::class, 'getProductByCategory
 // Route::get('/tac-gia/{author}', [ShopController::class, 'getProductByAuthor'])->name('author');
 Route::get('/san-pham/{product}', [ShopController::class, 'product'])->name('product');
 Route::get('/lien-he', [ShopController::class, 'contact'])->name('contact');
+Route::post('/lien-he', [ShopController::class, 'submitContact'])->name('contact.submit');
+
+//Page
+Route::get('/gioi-thieu', function() {
+    $page = \App\Models\Page::getPage('about');
+    return view('frontend.about', compact('page'));
+})->name('about');
 
 //Blog
 Route::get('/bai-viet', [BlogController::class, 'blog'])->name('blog');

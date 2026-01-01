@@ -16,7 +16,7 @@
     <meta name="keywords" content="@yield('keywords', $pageKeywords)">
     <meta name="description" content="@yield('description', $pageDescription)">
     <meta name="author" content="{{$seoSettings->site_name ?? 'MH Cosmetics'}}">
-    
+
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website">
     <meta property="og:url" content="{{url()->current()}}">
@@ -24,14 +24,14 @@
     <meta property="og:description" content="@yield('description', $pageDescription)">
     <meta property="og:image" content="@yield('og_image', $ogImage)">
     <meta property="og:site_name" content="{{$seoSettings->site_name ?? 'MH Cosmetics'}}">
-    
+
     <!-- Twitter -->
     <meta property="twitter:card" content="summary_large_image">
     <meta property="twitter:url" content="{{url()->current()}}">
     <meta property="twitter:title" content="@yield('title', $pageTitle)">
     <meta property="twitter:description" content="@yield('description', $pageDescription)">
     <meta property="twitter:image" content="@yield('og_image', $ogImage)">
-    
+
     @if($seoSettings->google_analytics_id)
     <!-- Google Analytics -->
     <script async src="https://www.googletagmanager.com/gtag/js?id={{$seoSettings->google_analytics_id}}"></script>
@@ -42,11 +42,11 @@
         gtag('config', '{{$seoSettings->google_analytics_id}}');
     </script>
     @endif
-    
+
     @if($seoSettings->google_search_console)
     <meta name="google-site-verification" content="{{$seoSettings->google_search_console}}" />
     @endif
-    
+
     @if($seoSettings->custom_head_code)
     {!! $seoSettings->custom_head_code !!}
     @endif
@@ -145,7 +145,7 @@
                     </a>
                 </div>
 
-                
+
             </div>
 
             <!-- search -->
@@ -265,6 +265,9 @@
                                     <a href="{{route('blog')}}" class="parent">Tin tức</a>
                                 </li>
                                 <li>
+                                    <a href="{{route('about')}}" class="parent">Giới thiệu</a>
+                                </li>
+                                <li>
                                     <a href="{{route('contact')}}" class="parent">Liên hệ</a>
                                     {{-- <div class="dropdown-menu">
                                         <ul>
@@ -312,7 +315,7 @@
                                     @else
                                         <span>Tài khoản</span>
                                     @endif
-                                    
+
                                     <i class="fa fa-angle-down" aria-hidden="true"></i>
                                 </a>
                             </div>
@@ -357,7 +360,7 @@
                                             </a>
                                         </div>
                                     @endif
-                                    
+
                                 </div>
                             </div>
                         </div>
@@ -429,6 +432,26 @@
     @yield('content')
 
     <!-- footer -->
+    @php
+        $footerSettings = \App\Models\FooterSettings::getSettings();
+        // Parse navigation links
+        $navLinks = [];
+        if ($footerSettings->navigation_links) {
+            $lines = explode("\n", $footerSettings->navigation_links);
+            foreach ($lines as $line) {
+                $line = trim($line);
+                if (!empty($line)) {
+                    $parts = explode('|', $line, 2);
+                    if (count($parts) == 2) {
+                        $navLinks[] = [
+                            'name' => trim($parts[0]),
+                            'url' => trim($parts[1])
+                        ];
+                    }
+                }
+            }
+        }
+    @endphp
     <footer class="footer-one">
         <div class="inner-footer">
             <div class="container">
@@ -438,41 +461,30 @@
                             <div class="block">
                                 <div class="block-content">
                                     <p class="logo-footer">
-                                        <img src="/assets/frontend/img/home/logo-black.png" alt="img">
+                                        <img src="{{$footerSettings->company_logo ? asset('storage/' . $footerSettings->company_logo) : '/assets/frontend/img/home/logo-black.png'}}" alt="{{$footerSettings->company_name ?? 'Logo'}}">
                                     </p>
+                                    @if($footerSettings->company_description)
+                                    <p class="content-logo">{{$footerSettings->company_description}}</p>
+                                    @else
                                     <p class="content-logo">Lorem ipsum dolor sit amet, consectetur adipiscing elit sed do eiusmod tempor incididunt
                                         ut labore et dolore magna aliqua. Ut enim ad minim
                                     </p>
+                                    @endif
                                 </div>
                             </div>
+                            @if(count($navLinks) > 0)
                             <div class="block">
                                 <div class="block-content">
                                     <ul>
+                                        @foreach($navLinks as $link)
                                         <li>
-                                            <a href="#">About Us</a>
+                                            <a href="{{$link['url']}}">{{$link['name']}}</a>
                                         </li>
-                                        <li>
-                                            <a href="#">Reasons to shop</a>
-                                        </li>
-                                        <li>
-                                            <a href="#">What our customers say</a>
-                                        </li>
-                                        <li>
-                                            <a href="#">Meet the teaml</a>
-                                        </li>
-                                        <li>
-                                            <a href="#">Contact our buyers</a>
-                                        </li>
+                                        @endforeach
                                     </ul>
                                 </div>
                             </div>
-                            <div class="block">
-                                <div class="block-content">
-                                    <p class="img-payment ">
-                                        <img class="img-fluid" src="/assets/frontend/img/home/payment-footer.png" alt="img">
-                                    </p>
-                                </div>
-                            </div>
+                            @endif
                         </div>
                         <div class="tiva-html col-lg-4 col-md-6">
                             <div class="block m-top">
@@ -480,43 +492,50 @@
                                     Contact Us
                                 </div>
                                 <div class="block-content">
+                                    @if($footerSettings->address)
                                     <div class="contact-us">
                                         <div class="title-content">
                                             <i class="fa fa-home" aria-hidden="true"></i>
                                             <span>Address :</span>
                                         </div>
                                         <div class="content-contact address-contact">
-                                            <p>123 Suspendis matti, Visaosang Building VST District NY Accums, North American</p>
+                                            <p>{{$footerSettings->address}}</p>
                                         </div>
                                     </div>
+                                    @endif
+                                    @if($footerSettings->email)
                                     <div class="contact-us">
                                         <div class="title-content">
                                             <i class="fa fa-envelope" aria-hidden="true"></i>
                                             <span>Email :</span>
                                         </div>
                                         <div class="content-contact mail-contact">
-                                            <p>support@domain.com</p>
+                                            <p>{{$footerSettings->email}}</p>
                                         </div>
                                     </div>
+                                    @endif
+                                    @if($footerSettings->hotline)
                                     <div class="contact-us">
                                         <div class="title-content">
                                             <i class="fa fa-phone" aria-hidden="true"></i>
                                             <span>Hotline :</span>
                                         </div>
                                         <div class="content-contact phone-contact">
-                                            <p>+0012-345-67890</p>
+                                            <p>{{$footerSettings->hotline}}</p>
                                         </div>
                                     </div>
+                                    @endif
+                                    @if($footerSettings->opening_hours)
                                     <div class="contact-us">
                                         <div class="title-content">
                                             <i class="fa fa-clock-o" aria-hidden="true"></i>
                                             <span>Opening Hours :</span>
                                         </div>
                                         <div class="content-contact hours-contact">
-                                            <p>Monday - Sunday / 08.00AM - 19.00</p>
-                                            <span>(Except Holidays)</span>
+                                            <p>{{$footerSettings->opening_hours}}</p>
                                         </div>
                                     </div>
+                                    @endif
                                 </div>
                             </div>
                         </div>
@@ -524,9 +543,13 @@
                             <div class="block m-top">
                                 <div class="block-content">
                                     <div class="title-block">Newsletter</div>
+                                    @if($footerSettings->newsletter_description)
+                                    <div class="sub-title">{{$footerSettings->newsletter_description}}</div>
+                                    @else
                                     <div class="sub-title">Sign up to our newsletter to get the latest articles, lookbooks voucher codes direct
                                         to your inbox
                                     </div>
+                                    @endif
                                     <div class="block-newsletter">
                                         <form action="#" method="post">
                                             <div class="input-group">
@@ -542,6 +565,7 @@
                                     </div>
                                 </div>
                             </div>
+                            @if($footerSettings->facebook_url || $footerSettings->twitter_url || $footerSettings->google_url || $footerSettings->instagram_url)
                             <div class="block m-top1">
                                 <div class="block-content">
                                     <div class="social-content">
@@ -551,32 +575,42 @@
                                         <div id="social-block">
                                             <div class="social">
                                                 <ul class="list-inline mb-0 justify-content-end">
+                                                    @if($footerSettings->facebook_url)
                                                     <li class="list-inline-item mb-0">
-                                                        <a href="#" target="_blank">
+                                                        <a href="{{$footerSettings->facebook_url}}" target="_blank">
                                                             <i class="fa fa-facebook"></i>
                                                         </a>
                                                     </li>
+                                                    @endif
+                                                    @if($footerSettings->twitter_url)
                                                     <li class="list-inline-item mb-0">
-                                                        <a href="#" target="_blank">
+                                                        <a href="{{$footerSettings->twitter_url}}" target="_blank">
                                                             <i class="fa fa-twitter"></i>
                                                         </a>
                                                     </li>
+                                                    @endif
+                                                    @if($footerSettings->google_url)
                                                     <li class="list-inline-item mb-0">
-                                                        <a href="#" target="_blank">
+                                                        <a href="{{$footerSettings->google_url}}" target="_blank">
                                                             <i class="fa fa-google"></i>
                                                         </a>
                                                     </li>
+                                                    @endif
+                                                    @if($footerSettings->instagram_url)
                                                     <li class="list-inline-item mb-0">
-                                                        <a href="#" target="_blank">
+                                                        <a href="{{$footerSettings->instagram_url}}" target="_blank">
                                                             <i class="fa fa-instagram"></i>
                                                         </a>
                                                     </li>
+                                                    @endif
                                                 </ul>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
+                            @endif
+                            @if($footerSettings->payment_image)
                             <div class="block m-top1">
                                 <div class="block-content">
                                     <div class="payment-content">
@@ -584,12 +618,13 @@
                                             Payment accept
                                         </div>
                                         <div class="payment-image">
-                                            <img class="img-fluid" src="/assets/frontend/img/home/payment.png" alt="img">
+                                            <img class="img-fluid" src="{{asset('storage/' . $footerSettings->payment_image)}}" alt="Payment Methods">
                                         </div>
                                     </div>
                                     <!-- Popup newsletter -->
                                 </div>
                             </div>
+                            @endif
                         </div>
                     </div>
                 </div>
@@ -600,7 +635,11 @@
                 <div class="row">
                     <div class="text-center col-lg-12 ">
                         <span>
-							<a target="_blank" href="https://www.templateshub.net">Templates Hub</a>
+                            @if($footerSettings->copyright_text)
+                                {!! $footerSettings->copyright_text !!}
+                            @else
+                                <a target="_blank" href="https://www.templateshub.net">Templates Hub</a>
+                            @endif
                         </span>
                     </div>
                 </div>
@@ -627,127 +666,61 @@
                     <!-- Brand and toggle get grouped for better mobile display -->
                     <div id="megamenu" class="clearfix">
                         <ul class="menu level1">
-                            <li class="item home-page has-sub">
-                                <span class="arrow collapsed" data-toggle="collapse" data-target="#home1" aria-expanded="true" role="status">
-                                    <i class="zmdi zmdi-minus"></i>
-                                    <i class="zmdi zmdi-plus"></i>
-                                </span>
-                                <a href="index-2.html" title="Home">
-                                    <i class="fa fa-home" aria-hidden="true"></i>Home</a>
-                                <div class="subCategory collapse" id="home1" aria-expanded="true" role="status">
-                                    <ul>
-                                        <li class="item">
-                                            <a href="index-2.html" title="Home Page 1">Home Page 1</a>
-                                        </li>
-                                        <li class="item">
-                                            <a href="home2.html" title="Home Page 2">Home Page 2</a>
-                                        </li>
-                                        <li class="item">
-                                            <a href="home3.html" title="Home Page 3">Home Page 3</a>
-                                        </li>
-                                        <li class="item">
-                                            <a href="home4.html" title="Home Page 4">Home Page 4</a>
-                                        </li>
-                                        <li class="item">
-                                            <a href="home5.html" title="Home Page 5">Home Page 5</a>
-                                        </li>
-                                    </ul>
-                                </div>
+                            <li class="item home-page">
+                                <a href="/" title="Trang chủ">
+                                    <i class="fa fa-home" aria-hidden="true"></i>Trang chủ</a>
                             </li>
-                            <li class="item has-sub">
-                                <span class="arrow collapsed" data-toggle="collapse" data-target="#blog" aria-expanded="false" role="status">
-                                    <i class="zmdi zmdi-minus"></i>
-                                    <i class="zmdi zmdi-plus"></i>
-                                </span>
-                                <a href="#" title="Blog">
-                                    <i class="fa fa-address-book" aria-hidden="true"></i>Blog</a>
-
-                                <div class="subCategory collapse" id="blog" aria-expanded="true" role="status">
-                                    <ul>
-                                        <li class="item">
-                                            <a href="blog-list-sidebar-left.html" title="Blog List (Sidebar Left)">Blog List (Sidebar Left)</a>
-                                        </li>
-                                        <li class="item">
-                                            <a href="blog-list-sidebar-left2.html" title="Blog List (Sidebar Left) 2">Blog List (Sidebar Left) 2</a>
-                                        </li>
-                                        <li class="item">
-                                            <a href="blog-list-sidebar-right.html" title="Category Blog (Right column)">Blog List (Sidebar Right)</a>
-                                        </li>
-                                        <li class="item">
-                                            <a href="blog-list-no-sidebar.html" title="Blog List (No Sidebar)">Blog List (No Sidebar)</a>
-                                        </li>
-                                        <li class="item">
-                                            <a href="blog-grid-no-sidebar.html" title="Blog Grid (No Sidebar)">Blog Grid (No Sidebar)</a>
-                                        </li>
-                                        <li class="item">
-                                            <a href="blog-detail.html" title="Blog Detail">Blog Detail</a>
-                                        </li>
-                                    </ul>
-                                </div>
+                            <li class="item">
+                                <a href="{{route('shop')}}" title="Cửa hàng">
+                                    <i class="fa fa-shopping-bag" aria-hidden="true"></i>Cửa hàng</a>
                             </li>
+                            @if(count($categories) > 0)
                             <li class="item group has-sub">
-                                <span class="arrow collapsed" data-toggle="collapse" data-target="#page" aria-expanded="false" role="status">
+                                <span class="arrow collapsed" data-toggle="collapse" data-target="#categories-mobile" aria-expanded="false" role="status">
                                     <i class="zmdi zmdi-minus"></i>
                                     <i class="zmdi zmdi-plus"></i>
                                 </span>
-                                <a href="#" title="Page">
-                                    <i class="fa fa-file-text-o" aria-hidden="true"></i>page</a>
-                                <div class="subCategory collapse" id="page" aria-expanded="true" role="status">
+                                <a href="#" title="Danh mục">
+                                    <i class="fa fa-list" aria-hidden="true"></i>Danh mục</a>
+                                <div class="subCategory collapse" id="categories-mobile" aria-expanded="false" role="status">
                                     <ul class="group-page">
                                         <li class="item container group">
                                             <div>
                                                 <ul>
-                                                    <li class="item col-md-4 ">
-                                                        <span class="menu-title">Category Style</span>
+                                                    @foreach($categories as $category)
+                                                    <li class="item col-md-12">
+                                                        <span class="menu-title">{{$category->name}}</span>
+                                                        @if($category->children->count() > 0)
                                                         <div class="menu-content">
                                                             <ul class="col">
+                                                                @foreach($category->children as $child_cate)
                                                                 <li>
-                                                                    <a href="product-grid-sidebar-left.html">Product Grid (Sidebar Left)</a>
+                                                                    <a href="{{route('category', $child_cate)}}">{{$child_cate->name}}</a>
                                                                 </li>
-                                                                <li>
-                                                                    <a href="product-grid-sidebar-right.html">Product Grid (Sidebar Right)</a>
-                                                                </li>
-                                                                <li>
-                                                                    <a href="product-list-sidebar-left.html">Product List (Sidebar Left) </a>
-                                                                </li>
+                                                                @endforeach
                                                             </ul>
                                                         </div>
+                                                        @endif
                                                     </li>
-                                                    <li class="item col-md-4 html">
-                                                        <span class="menu-title">Product Detail Style</span>
-                                                        <div class="menu-content">
-                                                            <ul>
-                                                                <li>
-                                                                    <a href="product-detail.html">Product Detail (Sidebar Left)</a>
-                                                                </li>
-                                                                <li>
-                                                                    <a href="#">Product Detail (Sidebar Right)</a>
-                                                                </li>
-                                                            </ul>
-                                                        </div>
-                                                    </li>
-                                                    <li class="item col-md-4 html">
-                                                        <span class="menu-title">Bonus Page</span>
-                                                        <div class="menu-content">
-                                                            <ul>
-                                                                <li>
-                                                                    <a href="404.html">404 Page</a>
-                                                                </li>
-                                                                <li>
-                                                                    <a href="about-us.html">About Us Page</a>
-                                                                </li>
-                                                            </ul>
-                                                        </div>
-                                                    </li>
+                                                    @endforeach
                                                 </ul>
                                             </div>
                                         </li>
                                     </ul>
                                 </div>
                             </li>
-                            <li class="item has-sub">
-                                <a href="contact.html" title="Contact us">
-                                    <i class="fa fa-map-marker" aria-hidden="true"></i>Contact us</a>
+                            @endif
+                            <li class="item">
+                                <a href="{{route('blog')}}" title="Tin tức">
+                                    <i class="fa fa-newspaper-o" aria-hidden="true"></i>Tin tức</a>
+                            </li>
+                            <li class="item">
+                                <a href="{{route('about')}}" title="Giới thiệu">
+                                    <i class="fa fa-info-circle" aria-hidden="true"></i>Giới thiệu</a>
+                            </li>
+                            <li class="item">
+                                <a href="{{route('contact')}}" title="Liên hệ">
+                                    <i class="fa fa-map-marker" aria-hidden="true"></i>Liên hệ</a>
                             </li>
                         </ul>
                     </div>
@@ -809,16 +782,16 @@
     <script src="/assets/frontend/js/theme.js"></script>
     <script src="/assets/frontend/js/my_script.js"></script>
     @stack('script')
-    
+
     @php
         $seoSettings = \App\Models\SeoSettings::getSettings();
     @endphp
-    
+
     @if($seoSettings->facebook_pixel)
     <!-- Facebook Pixel Code -->
     {!! $seoSettings->facebook_pixel !!}
     @endif
-    
+
     @if($seoSettings->custom_body_code)
     <!-- Custom Body Code -->
     {!! $seoSettings->custom_body_code !!}

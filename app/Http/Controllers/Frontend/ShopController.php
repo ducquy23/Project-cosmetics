@@ -9,6 +9,7 @@ use App\Models\Category;
 use App\Models\Brand;
 use App\Models\Post;
 use App\Models\Banner;
+use App\Models\ContactMessage;
 
 class ShopController extends Controller
 {
@@ -128,5 +129,28 @@ class ShopController extends Controller
 
     public function contact(){
         return view('frontend.contact');
+    }
+
+    public function submitContact(Request $request){
+        $data = $request->validate([
+            'name' => 'required|string|max:255',
+            'from' => 'required|email|max:255',
+            'phone' => 'required|string|max:20',
+            'message' => 'required|string',
+        ]);
+
+        try {
+            ContactMessage::create([
+                'name' => $data['name'],
+                'email' => $data['from'],
+                'phone' => $data['phone'],
+                'message' => $data['message'],
+                'status' => 'new'
+            ]);
+
+            return redirect()->route('contact')->with('success', 'Cảm ơn bạn đã liên hệ! Chúng tôi sẽ phản hồi sớm nhất có thể.');
+        } catch (\Exception $e) {
+            return redirect()->route('contact')->with('error', 'Có lỗi xảy ra. Vui lòng thử lại sau.');
+        }
     }
 }
