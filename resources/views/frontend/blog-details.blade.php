@@ -1,4 +1,14 @@
 @extends('frontend.layout.master')
+
+@php
+    use Illuminate\Support\Str;
+@endphp
+
+@section('title', $post->title . ' - MH Cosmetics')
+@section('description', Str::limit(strip_tags($post->content), 160))
+@section('keywords', $post->title . ', ' . ($post->postType->name ?? ''))
+@section('og_image', $post->thumbnail ?? '')
+
 @section('content')
 @section('page-id', 'blog-detail')
 @section('page-class', 'blog')

@@ -28,15 +28,16 @@ class ShopController extends Controller
 
     public function shop(Request $request){
         $keyword = $request->input('keyword');
-       
+
         $products = Product::when($keyword, function($query,$keyword){
             return $query->where('name','like',"%$keyword%");
         });
-        
+
         $products = $this->filter($products, $request);
         $products = $this->sortBy($products, $request);
         $products = $products->paginate(12);
-        return view('frontend.shop', compact('products'));
+        $category = null;
+        return view('frontend.shop', compact('products', 'category'));
     }
 
     public function product(Product $product){
@@ -60,11 +61,11 @@ class ShopController extends Controller
         $products = $this->sortBy($products, $request);
         $products = $products->paginate(12);
 
-        return view('frontend.shop',compact('products'));
+        return view('frontend.shop', compact('products', 'category'));
     }
 
     // public function getProductByAuthor(Author $author, Request $request){
-        
+
     //     $products = Product::where('author_id',$author->id);
     //     $products = $this->filter($products, $request);
     //     $products = $this->sortBy($products, $request);
@@ -73,7 +74,7 @@ class ShopController extends Controller
     // }
 
     protected function filter($products, $request){
-        
+
         /* Nơi sản xuất filter */
         $origins = $request->input('xuat_xu') ?? [];
         $arr_origins = array_keys($origins);
@@ -93,7 +94,7 @@ class ShopController extends Controller
         // $min_price = $request->input('min_price');
         // $max_price = $request->input('max_price');
 
-        // $products = ($min_price != null && $max_price != null) 
+        // $products = ($min_price != null && $max_price != null)
         //             ? $products->whereBetween('price', [$min_price, $max_price]) : $products;
 
         return $products;
@@ -101,7 +102,7 @@ class ShopController extends Controller
 
     protected function sortBy($products,Request $request){
         $sortBy = $request->input('sort_by') ?? 'latest';
-        
+
         switch ($sortBy) {
             case 'latest':
                 $products = $products->orderByDesc('id');

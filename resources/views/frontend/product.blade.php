@@ -1,4 +1,14 @@
 @extends('frontend.layout.master')
+
+@php
+    use Illuminate\Support\Str;
+@endphp
+
+@section('title', $product->name . ' - MH Cosmetics')
+@section('description', Str::limit(strip_tags($product->description), 160))
+@section('keywords', $product->name . ', ' . ($product->category->name ?? '') . ', ' . ($product->brand->name ?? ''))
+@section('og_image', $product->firstImage() ? $product->firstImage()->image : '')
+
 @section('content')
 @section('page-id', 'product-detail')
 

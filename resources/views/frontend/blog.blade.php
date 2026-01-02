@@ -1,4 +1,13 @@
 @extends('frontend.layout.master')
+
+@php
+    $seoSettings = \App\Models\SeoSettings::getSettings();
+@endphp
+
+@section('title', 'Tin tức - MH Cosmetics')
+@section('description', $seoSettings->meta_description ?? 'Tin tức về mỹ phẩm và làm đẹp')
+@section('keywords', 'Tin tức, Mỹ phẩm, Làm đẹp')
+
 @section('content')
 @section('page-class', 'blog')
 @section('page-id', 'blog-list-sidebar-left')
