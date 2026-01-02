@@ -87,6 +87,26 @@
         [class~=main-menu] [class~=menu] [class~=menu-top] li{
             padding: 0 15px !important;
         }
+        /* Sticky header khi scroll */
+        header {
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            background: #fff;
+            transition: all 0.3s ease;
+        }
+        header .header-top {
+            background: #fff;
+            transition: all 0.3s ease;
+        }
+        /* Thêm shadow khi scroll */
+        body.scrolled header {
+            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+        }
+        body.scrolled header .header-top {
+            padding-top: 5px;
+            padding-bottom: 5px;
+        }
         /* Fix menu active - chỉ hiển thị underline khi hover hoặc active */
         [class~=main-menu] [class~=menu] [class~=menu-top] > li > a:before,
         [class~=main-menu] [class~=menu] [class~=menu-top] > [class~=nav-link] > a:before {
@@ -776,6 +796,16 @@
     <script src="/assets/frontend/js/theme.js"></script>
     <script src="/assets/frontend/js/my_script.js"></script>
     @stack('script')
+    
+    <script>
+        window.addEventListener('scroll', function() {
+            if (window.scrollY > 50) {
+                document.body.classList.add('scrolled');
+            } else {
+                document.body.classList.remove('scrolled');
+            }
+        });
+    </script>
 
     @php
         $seoSettings = \App\Models\SeoSettings::getSettings();
