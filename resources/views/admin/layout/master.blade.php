@@ -196,6 +196,16 @@
                     @endif
                     @if (Auth::guard('admin')->user()->role === 'Quản trị viên')
                         <li class="sidebar-item">
+                            <a class="sidebar-link" href="{{route('admin.homepage.index')}}" aria-expanded="false">
+                                <span>
+                                    <i class="ti ti-home"></i>
+                                </span>
+                                <span class="hide-menu">Quản lý Trang chủ</span>
+                            </a>
+                        </li>
+                    @endif
+                    @if (Auth::guard('admin')->user()->role === 'Quản trị viên')
+                        <li class="sidebar-item">
                             <a class="sidebar-link" href="{{route('page.edit', 'about')}}" aria-expanded="false">
                                 <span>
                                     <i class="ti ti-file-text"></i>

@@ -18,6 +18,7 @@ use App\Http\Controllers\Admin\FooterController;
 use App\Http\Controllers\Admin\ContactController;
 use App\Http\Controllers\Admin\PageController;
 use App\Http\Controllers\Admin\MenuController;
+use App\Http\Controllers\Admin\HomepageController;
 use App\Http\Controllers\SitemapController;
 use App\Http\Controllers\RobotsController;
 
@@ -146,6 +147,12 @@ Route::prefix('admin')->group(function () {
         Route::get('/menu/edit/{menu}', [MenuController::class, 'edit'])->name('menu.edit');
         Route::post('/menu/edit/{menu}', [MenuController::class, 'update'])->name('menu.update');
         Route::delete('/menu/delete/{menu}', [MenuController::class, 'destroy'])->name('menu.destroy');
+
+        //Homepage
+        Route::get('/homepage', [HomepageController::class, 'index'])->name('admin.homepage.index');
+        Route::get('/homepage/edit/{type}', [HomepageController::class, 'edit'])->name('admin.homepage.edit');
+        Route::post('/homepage/edit/{type}', [HomepageController::class, 'update'])->name('admin.homepage.update');
+        Route::post('/homepage/upload-image', [HomepageController::class, 'uploadImage'])->name('admin.homepage.upload-image');
 
         //Footer
         Route::get('/footer', [FooterController::class, 'index'])->name('footer.index');
