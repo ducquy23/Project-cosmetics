@@ -27,6 +27,7 @@ use App\Http\Controllers\Frontend\AuthUserController;
 use App\Http\Controllers\Frontend\AccountController;
 use App\Http\Controllers\Frontend\FavoriteController;
 use App\Http\Controllers\Frontend\BlogController;
+use App\Http\Controllers\SlugController;
 
 /*
 |--------------------------------------------------------------------------
@@ -166,7 +167,6 @@ Route::get('/', [ShopController::class, 'index'])->name('home');
 Route::get('/cua-hang', [ShopController::class, 'shop'])->name('shop');
 Route::get('/danh-muc/{category}', [ShopController::class, 'getProductByCategory'])->name('category');
 // Route::get('/tac-gia/{author}', [ShopController::class, 'getProductByAuthor'])->name('author');
-Route::get('/san-pham/{product}', [ShopController::class, 'product'])->name('product');
 Route::get('/lien-he', [ShopController::class, 'contact'])->name('contact');
 Route::post('/lien-he', [ShopController::class, 'submitContact'])->name('contact.submit');
 
@@ -178,7 +178,6 @@ Route::get('/gioi-thieu', function() {
 
 //Blog
 Route::get('/bai-viet', [BlogController::class, 'blog'])->name('blog');
-Route::get('/bai-viet/{post}', [BlogController::class, 'blogDetail'])->name('blog.detail');
 
 Route::get('/gio-hang', [CartController::class, 'cart'])->name('cart');
 Route::get('/cart/add/{product}', [CartController::class, 'add'])->name('cart.add');
@@ -223,6 +222,9 @@ Route::middleware(['auth:web'])->group(function () {
     Route::post('/doi-mat-khau', [AccountController::class, 'updatePassword'])->name('account.update-password');
 
 });
+
+Route::get('/{slug}', [SlugController::class, 'index'])
+    ->where('slug', '[a-z0-9\-]+');
 
 Route::fallback(function () {
     return view('frontend.404');

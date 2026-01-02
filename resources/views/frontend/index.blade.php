@@ -378,7 +378,7 @@
                                     <div class="col-md-4">
                                         <div class="item-post">
                                             <div class="thumbnail-img">
-                                                <a href="{{route('blog.detail', $post)}}">
+                                                <a href="{{route_blog_detail($post)}}">
                                                     <img src="{{$post->thumbnail}}" alt="img" width="100%">
                                                 </a>
                                             </div>
@@ -394,7 +394,7 @@
                                                     </span>
                                                 </div>
                                                 <div class="post-title">
-                                                    <a href="{{route('blog.detail', $post)}}">{{$post->title}}</a>
+                                                    <a href="{{route_blog_detail($post)}}">{{$post->title}}</a>
                                                 </div>
                                                 <div class="post-desc">
                                                     {{$post->shortContent($post->content)}}

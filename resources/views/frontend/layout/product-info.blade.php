@@ -1,13 +1,13 @@
 <div class="product-miniature js-product-miniature item-one first-item">
     <div class="thumbnail-container {{ request()->route()->named('home')? '' : 'border' }}">
-        <a href="{{route('product', $product)}}">
+        <a href="{{route_product($product)}}">
             <img class="img-fluid image-cover"
                 src="{{$product->firstImage()->image}}" alt="img">
             @if ($product->secondImage())
-                <img class="img-fluid image-secondary" 
+                <img class="img-fluid image-secondary"
                     src="{{$product->secondImage()->image}}" alt="img">
             @else
-                <img class="img-fluid image-secondary" 
+                <img class="img-fluid image-secondary"
                     src="{{$product->firstImage()->image}}" alt="img">
             @endif
         </a>
@@ -18,7 +18,7 @@
     <div class="product-description">
         <div class="product-groups">
             <div class="product-title">
-                <a href="{{route('product', $product)}}">{{$product->name}}</a>
+                <a href="{{route_product($product)}}">{{$product->name}}</a>
             </div>
             <div class="product-group-price">
                 <div class="product-price-and-shipping">
@@ -38,7 +38,7 @@
             <a class="addToWishlist" href="{{route('favorite.add', $product)}}" data-rel="1" onclick="">
                 <i class="fa fa-heart" aria-hidden="true"></i>
             </a>
-            <a href="{{route('product', $product)}}" class="quick-view hidden-sm-down" data-link-action="quickview">
+            <a href="{{route_product($product)}}" class="quick-view hidden-sm-down" data-link-action="quickview">
                 <i class="fa fa-eye" aria-hidden="true"></i>
             </a>
         </div>

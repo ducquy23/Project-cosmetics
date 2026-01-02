@@ -37,13 +37,13 @@
                                         @foreach ($posts as $post)
                                             <div class="list-content row">
                                                 <div class="hover-after col-md-5 col-xs-12">
-                                                    <a href="{{route('blog.detail', $post)}}">
+                                                    <a href="{{route_blog_detail($post)}}">
                                                         <img src="{{$post->thumbnail}}" alt="img">
                                                     </a>
                                                 </div>
                                                 <div class="late-item col-md-7 col-xs-12">
                                                     <p class="content-title">
-                                                        <a href="{{route('blog.detail', $post)}}">{{$post->title}}</a>
+                                                        <a href="{{route_blog_detail($post)}}">{{$post->title}}</a>
                                                     </p>
                                                     <p class="post-info">
                                                         <span>{{$post->view}} lượt xem</span>
@@ -54,7 +54,7 @@
                                                         {!! $post->shortContent($post->content, 200) !!}
                                                     </p>
                                                     <span class="view-more">
-                                                        <a href="{{route('blog.detail', $post)}}">Xem thêm</a>
+                                                        <a href="{{route_blog_detail($post)}}">Xem thêm</a>
                                                     </span>
                                                 </div>
                                             </div>

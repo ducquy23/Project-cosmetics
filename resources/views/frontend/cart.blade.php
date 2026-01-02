@@ -41,14 +41,14 @@
                                                                 <!--  product left content: image-->
                                                                 <div class="product-line-grid-left col-md-2">
                                                                     <span class="product-image media-middle">
-                                                                        <a href="{{route('product', $cart['slug'] ?? $cart['product_id'])}}">
+                                                                        <a href="{{route_product($cart['slug'] ?? $cart['product_id'])}}">
                                                                             <img class="img-fluid" src="{{$cart['image']}}" alt="product">
                                                                         </a>
                                                                     </span>
                                                                 </div>
                                                                 <div class="product-line-grid-body col-md-6">
                                                                     <div class="product-line-info">
-                                                                        <a class="label" href="{{route('product', $cart['slug'] ?? $cart['product_id'])}}" 
+                                                                        <a class="label" href="{{route_product($cart['slug'] ?? $cart['product_id'])}}" 
                                                                             data-id_customization="0">{{$cart['name']}}</a>
                                                                     </div>
                                                                     <div class="product-line-info product-price">
