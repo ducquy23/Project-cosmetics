@@ -107,6 +107,65 @@
             padding-top: 5px;
             padding-bottom: 5px;
         }
+        /* Fix banner hiển thị cùng kích thước và đủ full hình ảnh */
+        .nivoSlider {
+            position: relative;
+            width: 100%;
+            height: 700px !important;
+            overflow: hidden;
+            background: #f5f5f5;
+        }
+        .nivoSlider img {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: auto !important;
+            height: 100% !important;
+            max-width: 100% !important;
+            object-fit: contain !important;
+            object-position: center !important;
+        }
+        .nivoSlider a.nivo-imageLink {
+            width: 100% !important;
+            height: 100% !important;
+            display: block;
+        }
+        .tiva-slideshow-wrapper {
+            width: 100%;
+            height: 700px !important;
+            overflow: hidden;
+            background: #f5f5f5;
+        }
+        .wrap-banner {
+            width: 100%;
+            height: 700px !important;
+            overflow: hidden;
+            background: #f5f5f5;
+        }
+        .section.banner {
+            width: 100%;
+            height: 700px !important;
+            overflow: hidden;
+            background: #f5f5f5;
+        }
+        /* Responsive cho banner */
+        @media (max-width: 768px) {
+            .nivoSlider,
+            .tiva-slideshow-wrapper,
+            .wrap-banner,
+            .section.banner {
+                height: 400px !important;
+            }
+        }
+        @media (max-width: 480px) {
+            .nivoSlider,
+            .tiva-slideshow-wrapper,
+            .wrap-banner,
+            .section.banner {
+                height: 300px !important;
+            }
+        }
         /* Fix menu active - chỉ hiển thị underline khi hover hoặc active */
         [class~=main-menu] [class~=menu] [class~=menu-top] > li > a:before,
         [class~=main-menu] [class~=menu] [class~=menu-top] > [class~=nav-link] > a:before {
@@ -796,7 +855,7 @@
     <script src="/assets/frontend/js/theme.js"></script>
     <script src="/assets/frontend/js/my_script.js"></script>
     @stack('script')
-    
+
     <script>
         window.addEventListener('scroll', function() {
             if (window.scrollY > 50) {
