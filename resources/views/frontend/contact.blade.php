@@ -172,13 +172,13 @@
                                                 <div class="form-fields">
                                                     <div class="form-group row">
                                                         <div class="col-md-6">
-                                                            <input class="form-control" name="name" placeholder="Họ tên" value="{{old('name')}}" required>
+                                                            <input class="form-control" name="name" placeholder="Họ tên" value="{{old('name')}}">
                                                             @error('name')
                                                                 <small class="text-danger">{{$message}}</small>
                                                             @enderror
                                                         </div>
                                                         <div class="col-md-6 margin-bottom-mobie">
-                                                            <input class="form-control" name="from" type="email" value="{{old('from')}}" placeholder="Email" required>
+                                                            <input class="form-control" name="from" type="email" value="{{old('from')}}" placeholder="Email">
                                                             @error('from')
                                                                 <small class="text-danger">{{$message}}</small>
                                                             @enderror
@@ -186,7 +186,7 @@
                                                     </div>
                                                     <div class="form-group row">
                                                         <div class="col-md-12">
-                                                            <input class="form-control" name="phone" type="tel" placeholder="Số điện thoại" value="{{old('phone')}}" required>
+                                                            <input class="form-control" name="phone" type="tel" placeholder="Số điện thoại *" value="{{old('phone')}}" required>
                                                             @error('phone')
                                                                 <small class="text-danger">{{$message}}</small>
                                                             @enderror
@@ -194,7 +194,7 @@
                                                     </div>
                                                     <div class="form-group row">
                                                         <div class="col-md-12">
-                                                            <textarea class="form-control" name="message" placeholder="Nội dung" rows="8" required>{{old('message')}}</textarea>
+                                                            <textarea class="form-control" name="message" placeholder="Nội dung *" rows="8" required>{{old('message')}}</textarea>
                                                             @error('message')
                                                                 <small class="text-danger">{{$message}}</small>
                                                             @enderror
@@ -202,7 +202,7 @@
                                                     </div>
                                                 </div>
                                                 <div>
-                                                    <button class="btn" type="submit" name="submitMessage">
+                                                    <button class="btn" type="submit" name="submitMessage" id="submitContactBtn">
                                                         <img class="img-fl" src="/assets/frontend/img/other/contact_email.png" alt="img">Gửi yêu cầu
                                                     </button>
                                                 </div>
@@ -218,5 +218,62 @@
         </div>
     </div>
 </div>
+
+@push('script')
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const form = document.querySelector('form[action="{{route("contact.submit")}}"]');
+        const submitBtn = document.getElementById('submitContactBtn');
+        const phoneInput = document.querySelector('input[name="phone"]');
+        
+        if (form && submitBtn) {
+            // Ensure button is enabled
+            submitBtn.disabled = false;
+            
+            // Handle form submission
+            form.addEventListener('submit', function(e) {
+                // Validate phone number
+                if (!phoneInput.value.trim()) {
+                    e.preventDefault();
+                    alert('Vui lòng nhập số điện thoại!');
+                    phoneInput.focus();
+                    return false;
+                }
+                
+                // Validate message
+                const messageInput = document.querySelector('textarea[name="message"]');
+                if (messageInput && !messageInput.value.trim()) {
+                    e.preventDefault();
+                    alert('Vui lòng nhập nội dung!');
+                    messageInput.focus();
+                    return false;
+                }
+                
+                // Validate email format if provided
+                const emailInput = document.querySelector('input[name="from"]');
+                if (emailInput && emailInput.value.trim()) {
+                    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                    if (!emailRegex.test(emailInput.value.trim())) {
+                        e.preventDefault();
+                        alert('Email không hợp lệ!');
+                        emailInput.focus();
+                        return false;
+                    }
+                }
+                
+                // Disable button to prevent double submission
+                submitBtn.disabled = true;
+                submitBtn.innerHTML = '<img class="img-fl" src="/assets/frontend/img/other/contact_email.png" alt="img">Đang gửi...';
+                
+                // Re-enable after 3 seconds in case of error
+                setTimeout(function() {
+                    submitBtn.disabled = false;
+                    submitBtn.innerHTML = '<img class="img-fl" src="/assets/frontend/img/other/contact_email.png" alt="img">Gửi yêu cầu';
+                }, 3000);
+            });
+        }
+    });
+</script>
+@endpush
 
 @endsection

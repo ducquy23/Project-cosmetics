@@ -101,8 +101,11 @@ $(function () {
 
   };
 
-  var chart = new ApexCharts(document.querySelector("#chart"), chart);
-  chart.render();
+  var chartElement = document.querySelector("#chart");
+  if (chartElement) {
+    var profitChart = new ApexCharts(chartElement, chart);
+    profitChart.render();
+  }
 
 
   // =====================================
@@ -156,8 +159,11 @@ $(function () {
     },
   };
 
-  var chart = new ApexCharts(document.querySelector("#breakup"), breakup);
-  chart.render();
+  var breakupElement = document.querySelector("#breakup");
+  if (breakupElement) {
+    var breakupChart = new ApexCharts(breakupElement, breakup);
+    breakupChart.render();
+  }
 
 
 
@@ -207,5 +213,8 @@ $(function () {
       },
     },
   };
-  new ApexCharts(document.querySelector("#earning"), earning).render();
+  var earningElement = document.querySelector("#earning");
+  if (earningElement) {
+    new ApexCharts(earningElement, earning).render();
+  }
 })

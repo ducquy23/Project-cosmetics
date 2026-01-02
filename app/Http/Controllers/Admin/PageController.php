@@ -66,7 +66,9 @@ class PageController extends Controller
             return redirect()->route('page.edit', $type)->with('success', 'Cập nhật trang thành công!');
         } catch (\Throwable $e) {
             DB::rollback();
-            throw $e;
+            return redirect()->route('page.edit', $type)
+                ->withInput()
+                ->with('error', 'Có lỗi xảy ra khi cập nhật: ' . $e->getMessage());
         }
     }
 

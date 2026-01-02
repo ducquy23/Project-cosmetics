@@ -6,10 +6,13 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     @php
         $seoSettings = \App\Models\SeoSettings::getSettings();
+        $menuItems = \App\Models\MenuItem::where('is_active', 1)->where('is_visible', 1)->orderBy('order')->get();
         $pageTitle = $seoSettings->meta_title ?? 'MH Cosmetics - Mỹ phẩm chính hãng';
         $pageDescription = $seoSettings->meta_description ?? 'MH Cosmetics - Mỹ phẩm chính hãng';
         $pageKeywords = $seoSettings->meta_keywords ?? 'MH Cosmetics, Cosmetics, Mỹ phẩm chính hãng';
         $ogImage = $seoSettings->og_image ? asset('storage/' . $seoSettings->og_image) : asset('assets/frontend/img/home/logo-black.png');
+        $logo = $seoSettings->logo ? asset('storage/' . $seoSettings->logo) : asset('assets/frontend/img/home/logo-black.png');
+        $logoMobile = $seoSettings->logo_mobile ? asset('storage/' . $seoSettings->logo_mobile) : asset('assets/frontend/img/home/logo-mobie.png');
     @endphp
     <title>@yield('title', $pageTitle)</title>
 
@@ -84,6 +87,18 @@
         [class~=main-menu] [class~=menu] [class~=menu-top] li{
             padding: 0 15px !important;
         }
+        /* Fix menu active - chỉ hiển thị underline khi hover hoặc active */
+        [class~=main-menu] [class~=menu] [class~=menu-top] > li > a:before,
+        [class~=main-menu] [class~=menu] [class~=menu-top] > [class~=nav-link] > a:before {
+            width: 0 !important;
+            transition: width .3s ease;
+        }
+        [class~=main-menu] [class~=menu] [class~=menu-top] > li:hover > a:before,
+        [class~=main-menu] [class~=menu] [class~=menu-top] > [class~=nav-link]:hover > a:before,
+        [class~=main-menu] [class~=menu] [class~=menu-top] > li.active > a:before,
+        [class~=main-menu] [class~=menu] [class~=menu-top] > [class~=nav-link].active > a:before {
+            width: 50% !important;
+        }
         .pagination{
             justify-content: center;
         }
@@ -141,7 +156,7 @@
                 <!-- logo -->
                 <div class="mobile-logo">
                     <a href="/">
-                        <img class="logo-mobile img-fluid" src="/assets/frontend/img/home/logo-mobie.png" alt="Prestashop_Furnitica">
+                        <img class="logo-mobile img-fluid" src="{{$logoMobile}}" alt="Logo">
                     </a>
                 </div>
 
@@ -219,7 +234,7 @@
                     <div class="col-sm-2 col-md-2 d-flex align-items-center">
                         <div id="logo">
                             <a href="/">
-                                <img class="img-fluid" src="/assets/frontend/img/home/logo-black.png" alt="logo">
+                                <img class="img-fluid" src="{{$logo}}" alt="logo">
                             </a>
                         </div>
                     </div>
@@ -228,78 +243,57 @@
                     <div class="main-menu col-sm-4 col-md-5 align-items-center justify-content-center navbar-expand-md">
                         <div class="menu navbar collapse navbar-collapse">
                             <ul class="menu-top navbar-nav">
-                                <li class="nav-link">
-                                    <a href="/" class="parent">Trang chủ</a>
-                                </li>
-                                <li>
-                                    <a href="{{route('shop')}}" class="parent">Cửa hàng</a>
-                                </li>
-                                <li>
-                                    <a href="#" class="parent">Danh mục</a>
-                                    <div class="dropdown-menu drop-tab">
-                                        <ul>
-                                            <li class="item container group">
-                                                <div class="dropdown-menu dropdown-tab">
+                                @foreach($menuItems as $menu)
+                                    @if($menu->is_active && $menu->is_visible)
+                                        @php
+                                            $isActive = false;
+                                            if($menu->route) {
+                                                $isActive = request()->routeIs($menu->route . '*') || request()->routeIs($menu->route);
+                                            } elseif($menu->url) {
+                                                $isActive = request()->is(trim($menu->url, '/')) || request()->fullUrl() === $menu->url;
+                                            }
+                                        @endphp
+                                        <li class="{{$menu->route === 'category' || strtolower($menu->name) === 'danh mục' ? '' : 'nav-link'}} {{$isActive ? 'active' : ''}}">
+                                            @if($menu->route === 'category' || strtolower($menu->name) === 'danh mục' || strtolower($menu->name) === 'danh mục sản phẩm')
+                                                <a href="#" class="parent">{{$menu->name}}</a>
+                                                <div class="dropdown-menu drop-tab">
                                                     <ul>
-                                                        @foreach ($categories as $category)
-                                                            <li class="item col-md-4 float-left">
-                                                                <span class="menu-title">{{$category->name}}</span>
-                                                                <div class="menu-content">
-                                                                    <ul class="col">
-                                                                        @foreach ($category->children as $child_cate)
-                                                                            <li>
-                                                                                <a href="{{route('category', $child_cate)}}">{{$child_cate->name}}</a>
-                                                                            </li>
-                                                                        @endforeach
-                                                                    </ul>
-                                                                </div>
-                                                            </li>
-                                                        @endforeach
+                                                        <li class="item container group">
+                                                            <div class="dropdown-menu dropdown-tab">
+                                                                <ul>
+                                                                    @foreach ($categories as $category)
+                                                                        <li class="item col-md-4 float-left">
+                                                                            <span class="menu-title">{{$category->name}}</span>
+                                                                            <div class="menu-content">
+                                                                                <ul class="col">
+                                                                                    @foreach ($category->children as $child_cate)
+                                                                                        <li>
+                                                                                            <a href="{{route('category', $child_cate)}}">{{$child_cate->name}}</a>
+                                                                                        </li>
+                                                                                    @endforeach
+                                                                                </ul>
+                                                                            </div>
+                                                                        </li>
+                                                                    @endforeach
+                                                                </ul>
+                                                            </div>
+                                                        </li>
                                                     </ul>
                                                 </div>
-                                            </li>
-                                        </ul>
-                                    </div>
-                                </li>
-                                <li>
-                                    <a href="{{route('blog')}}" class="parent">Tin tức</a>
-                                </li>
-                                <li>
-                                    <a href="{{route('about')}}" class="parent">Giới thiệu</a>
-                                </li>
-                                <li>
-                                    <a href="{{route('contact')}}" class="parent">Liên hệ</a>
-                                    {{-- <div class="dropdown-menu">
-                                        <ul>
-                                            <li class="item">
-                                                <a href="blog-list-sidebar-left.html" title="Blog List (Sidebar Left)">Blog List (Sidebar Left)</a>
-                                            </li>
-                                            <li class="item">
-                                                <a href="blog-list-sidebar-left2.html" title="Blog List (Sidebar Left) 2">Blog List (Sidebar Left) 2</a>
-                                            </li>
-                                            <li class="item">
-                                                <a href="blog-list-sidebar-right.html" title="Category Blog (Right column)">Blog List (Sidebar Right)</a>
-                                            </li>
-                                            <li class="item">
-                                                <a href="blog-list-no-sidebar.html" title="Blog List (No Sidebar)">Blog List (No Sidebar)</a>
-                                            </li>
-                                            <li class="item">
-                                                <a href="blog-grid-no-sidebar.html" title="Blog Grid (No Sidebar)">Blog Grid (No Sidebar)</a>
-                                            </li>
-                                            <li class="item">
-                                                <a href="blog-detail.html" title="Blog Detail">Blog Detail</a>
-                                            </li>
-                                        </ul>
-                                    </div> --}}
-                                </li>
+                                            @else
+                                                <a href="{{$menu->route ? route($menu->route) : ($menu->url ?? '#')}}" class="parent">{{$menu->name}}</a>
+                                            @endif
+                                        </li>
+                                    @endif
+                                @endforeach
                             </ul>
                         </div>
                     </div>
 
                     <!-- search-->
                     <div id="search_widget" class="col-sm-6 col-md-5 align-items-center justify-content-end d-flex">
-                        <form method="get" action="{{route('shop')}}">
-                            <input type="text" name="keyword" value="{{request('keyword')}}" placeholder="Tìm kiếm sản phẩm..." class="ui-autocomplete-input" autocomplete="off">
+                        <form method="get" action="{{route('search')}}">
+                            <input type="text" name="keyword" value="{{request('keyword')}}" placeholder="Tìm kiếm sản phẩm, tin tức..." class="ui-autocomplete-input" autocomplete="off">
                             <button type="submit">
                                 <i class="fa fa-search"></i>
                             </button>

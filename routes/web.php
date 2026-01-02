@@ -17,6 +17,7 @@ use App\Http\Controllers\Admin\SeoController;
 use App\Http\Controllers\Admin\FooterController;
 use App\Http\Controllers\Admin\ContactController;
 use App\Http\Controllers\Admin\PageController;
+use App\Http\Controllers\Admin\MenuController;
 use App\Http\Controllers\SitemapController;
 use App\Http\Controllers\RobotsController;
 
@@ -138,6 +139,14 @@ Route::prefix('admin')->group(function () {
         Route::get('/seo', [SeoController::class, 'index'])->name('seo.index');
         Route::post('/seo', [SeoController::class, 'update'])->name('seo.update');
 
+        //Menu
+        Route::get('/menu', [MenuController::class, 'index'])->name('menu.index');
+        Route::get('/menu/create', [MenuController::class, 'create'])->name('menu.create');
+        Route::post('/menu/create', [MenuController::class, 'store'])->name('menu.store');
+        Route::get('/menu/edit/{menu}', [MenuController::class, 'edit'])->name('menu.edit');
+        Route::post('/menu/edit/{menu}', [MenuController::class, 'update'])->name('menu.update');
+        Route::delete('/menu/delete/{menu}', [MenuController::class, 'destroy'])->name('menu.destroy');
+
         //Footer
         Route::get('/footer', [FooterController::class, 'index'])->name('footer.index');
         Route::post('/footer', [FooterController::class, 'update'])->name('footer.update');
@@ -170,6 +179,9 @@ Route::get('/danh-muc/{category}', [ShopController::class, 'getProductByCategory
 Route::get('/lien-he', [ShopController::class, 'contact'])->name('contact');
 Route::post('/lien-he', [ShopController::class, 'submitContact'])->name('contact.submit');
 
+//Search
+Route::get('/tim-kiem', [ShopController::class, 'search'])->name('search');
+
 //Page
 Route::get('/gioi-thieu', function() {
     $page = \App\Models\Page::getPage('about');
@@ -178,6 +190,7 @@ Route::get('/gioi-thieu', function() {
 
 //Blog
 Route::get('/bai-viet', [BlogController::class, 'blog'])->name('blog');
+Route::get('/bai-viet/{post}', [BlogController::class, 'blogDetail'])->name('blog.detail');
 
 Route::get('/gio-hang', [CartController::class, 'cart'])->name('cart');
 Route::get('/cart/add/{product}', [CartController::class, 'add'])->name('cart.add');
@@ -190,6 +203,8 @@ Route::middleware(['guest:web'])->group(function () {
     Route::post('/dang-nhap', [AuthUserController::class, 'loginPost'])->name('loginPost');
     Route::get('/dang-ky', [AuthUserController::class, 'register'])->name('register');
     Route::post('/dang-ky', [AuthUserController::class, 'registerPost'])->name('registerPost');
+    Route::get('/auth/google', [AuthUserController::class, 'redirectToGoogle'])->name('auth.google');
+    Route::get('/auth/google/callback', [AuthUserController::class, 'handleGoogleCallback'])->name('auth.google.callback');
 
     Route::get('/forgot-password', [AuthUserController::class, 'forgotPassword'])->name('password.request');
     Route::post('/forgot-password', [AuthUserController::class, 'forgotPasswordPost'])->name('password.email');
@@ -205,10 +220,6 @@ Route::middleware(['auth:web'])->group(function () {
     Route::get('/yeu-thich/{product}', [FavoriteController::class, 'add'])->name('favorite.add');
     Route::get('/yeu-thich/delete/{product_id}', [FavoriteController::class, 'delete'])->name('favorite.delete');
 
-    Route::get('/dat-hang', [CheckoutController::class, 'index'])->name('checkout');
-    Route::post('/checkout', [CheckoutController::class, 'checkout'])->name('checkoutPost');
-    Route::get('/checkout/vnPayCheck', [CheckoutController::class, 'vnPayCheck'])->name('checkout.vnpay');
-
     Route::get('/tai-khoan', [AccountController::class, 'account'])->name('account');
     Route::post('/tai-khoan', [AccountController::class, 'updateAccount'])->name('account.update');
 
@@ -222,6 +233,11 @@ Route::middleware(['auth:web'])->group(function () {
     Route::post('/doi-mat-khau', [AccountController::class, 'updatePassword'])->name('account.update-password');
 
 });
+
+// Checkout routes - allow guest checkout
+Route::get('/dat-hang', [CheckoutController::class, 'index'])->name('checkout');
+Route::post('/checkout', [CheckoutController::class, 'checkout'])->name('checkoutPost');
+Route::get('/checkout/vnPayCheck', [CheckoutController::class, 'vnPayCheck'])->name('checkout.vnpay');
 
 Route::get('/{slug}', [SlugController::class, 'index'])
     ->where('slug', '[a-z0-9\-]+');

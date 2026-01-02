@@ -26,6 +26,12 @@
                         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                     </div>
                 @endif
+                @if(session('error'))
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        {{ session('error') }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                @endif
                 <form method="POST" action="{{route('page.update', $type)}}" enctype="multipart/form-data">
                     @csrf
                     <div class="mb-3">
@@ -45,7 +51,7 @@
                     </div>
                     <div class="mb-3">
                         <label for="content" class="form-label">Nội dung <span class="text-danger">*</span></label>
-                        <textarea class="form-control" name="content" id="content" required>{{old('content', $page->content)}}</textarea>
+                        <textarea class="form-control" name="content" id="content" rows="10">{{old('content', $page->content)}}</textarea>
                         @error('content')
                             <p class="text-danger">{{$message}}</p>
                         @enderror
@@ -101,7 +107,17 @@
     <script src="https://cdn.ckeditor.com/ckeditor5/39.0.1/super-build/ckeditor.js"></script>
         
     <script>
-        CKEDITOR.ClassicEditor.create(document.getElementById("content"), {
+        let editorInstance;
+        let ckEditorLoaded = false;
+        
+        // Initialize CKEditor after DOM and script are ready
+        document.addEventListener('DOMContentLoaded', function() {
+            // Wait a bit for CKEditor script to load
+            setTimeout(function() {
+                if (typeof CKEDITOR !== 'undefined' && CKEDITOR.ClassicEditor) {
+                    const contentElement = document.getElementById("content");
+                    if (contentElement) {
+                        CKEDITOR.ClassicEditor.create(contentElement, {
             toolbar: {
                 items: [
                     'exportPDF','exportWord', '|',
@@ -220,6 +236,29 @@
                 'TableOfContents',
                 'PasteFromOfficeEnhanced'
             ]
+                        }).then(editor => {
+                            editorInstance = editor;
+                            ckEditorLoaded = true;
+                            console.log('CKEditor initialized successfully');
+                            
+                            // Remove required attribute from textarea since CKEditor handles it
+                            const contentTextarea = document.getElementById('content');
+                            if (contentTextarea) {
+                                contentTextarea.removeAttribute('required');
+                            }
+                        }).catch(error => {
+                            console.error('Error initializing CKEditor:', error);
+                            ckEditorLoaded = false;
+                        });
+                    } else {
+                        console.error('Content textarea not found');
+                        ckEditorLoaded = false;
+                    }
+                } else {
+                    console.error('CKEDITOR is not defined. CDN may not have loaded.');
+                    ckEditorLoaded = false;
+                }
+            }, 100);
         });
     </script>
     
@@ -241,16 +280,100 @@
         }
         
         // Preview image
-        document.getElementById('product-img').addEventListener('change', function(e) {
-            const file = e.target.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    const preview = document.getElementById('imagePreview');
-                    preview.src = e.target.result;
-                    preview.style.display = 'block';
+        const productImgInput = document.getElementById('product-img');
+        if (productImgInput) {
+            productImgInput.addEventListener('change', function(e) {
+                const file = e.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        const preview = document.getElementById('imagePreview');
+                        if (preview) {
+                            preview.src = e.target.result;
+                            preview.style.display = 'block';
+                        }
+                    }
+                    reader.readAsDataURL(file);
                 }
-                reader.readAsDataURL(file);
+            });
+        }
+        
+        // Update textarea with CKEditor content before form submission
+        document.addEventListener('DOMContentLoaded', function() {
+            try {
+                const form = document.querySelector('form[method="POST"]');
+                if (form) {
+                    form.addEventListener('submit', function(e) {
+                        try {
+                            console.log('Form submit triggered');
+                            
+                            const contentTextarea = document.getElementById('content');
+                            const titleInput = document.getElementById('title');
+                            
+                            // Validate title
+                            if (titleInput && !titleInput.value.trim()) {
+                                e.preventDefault();
+                                alert('Vui lòng nhập tiêu đề!');
+                                titleInput.focus();
+                                return false;
+                            }
+                            
+                            // Sync CKEditor content to textarea and validate
+                            let contentValue = '';
+                            if (ckEditorLoaded && editorInstance) {
+                                try {
+                                    contentValue = editorInstance.getData().trim();
+                                    // Update textarea with CKEditor content before submission
+                                    if (contentTextarea) {
+                                        contentTextarea.value = editorInstance.getData();
+                                    }
+                                    console.log('CKEditor content synced, length:', contentValue.length);
+                                } catch (error) {
+                                    console.error('Error getting CKEditor data:', error);
+                                    contentValue = contentTextarea ? contentTextarea.value.trim() : '';
+                                }
+                            } else if (contentTextarea) {
+                                contentValue = contentTextarea.value.trim();
+                                console.log('Using textarea directly, length:', contentValue.length);
+                            }
+                            
+                            // Validate content
+                            if (!contentValue) {
+                                e.preventDefault();
+                                alert('Vui lòng nhập nội dung!');
+                                if (ckEditorLoaded && editorInstance) {
+                                    editorInstance.focus();
+                                } else if (contentTextarea) {
+                                    contentTextarea.focus();
+                                }
+                                return false;
+                            }
+                            
+                            console.log('Form validation passed, submitting...');
+                            // Don't prevent default - allow form to submit normally
+                            return true;
+                        } catch (error) {
+                            console.error('Error in form submit handler:', error);
+                            // On error, still try to sync content and submit
+                            if (ckEditorLoaded && editorInstance) {
+                                try {
+                                    const contentTextarea = document.getElementById('content');
+                                    if (contentTextarea) {
+                                        contentTextarea.value = editorInstance.getData();
+                                    }
+                                } catch (syncError) {
+                                    console.error('Error syncing content:', syncError);
+                                }
+                            }
+                            // Don't prevent default, let form submit anyway
+                            return true;
+                        }
+                    });
+                } else {
+                    console.error('Form not found');
+                }
+            } catch (error) {
+                console.error('Error setting up form submit handler:', error);
             }
         });
     </script>

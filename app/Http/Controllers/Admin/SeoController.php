@@ -19,6 +19,8 @@ class SeoController extends Controller
     {
         $data = $request->validate([
             'site_name' => 'nullable|string|max:255',
+            'logo' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
+            'logo_mobile' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
             'meta_title' => 'nullable|string|max:255',
             'meta_description' => 'nullable|string|max:500',
             'meta_keywords' => 'nullable|string|max:500',
@@ -35,6 +37,34 @@ class SeoController extends Controller
         DB::beginTransaction();
         try {
             $seoSettings = SeoSettings::getSettings();
+
+            // Xử lý upload logo
+            if ($request->hasFile('logo')) {
+                if ($seoSettings->logo && file_exists(public_path('storage/' . $seoSettings->logo))) {
+                    unlink(public_path('storage/' . $seoSettings->logo));
+                }
+                $imageName = $request->file('logo')->hashName();
+                $res = $request->file('logo')->storeAs('seo', $imageName, 'public');
+                if ($res) {
+                    $data['logo'] = 'seo/' . $imageName;
+                }
+            } else {
+                unset($data['logo']);
+            }
+
+            // Xử lý upload logo_mobile
+            if ($request->hasFile('logo_mobile')) {
+                if ($seoSettings->logo_mobile && file_exists(public_path('storage/' . $seoSettings->logo_mobile))) {
+                    unlink(public_path('storage/' . $seoSettings->logo_mobile));
+                }
+                $imageName = $request->file('logo_mobile')->hashName();
+                $res = $request->file('logo_mobile')->storeAs('seo', $imageName, 'public');
+                if ($res) {
+                    $data['logo_mobile'] = 'seo/' . $imageName;
+                }
+            } else {
+                unset($data['logo_mobile']);
+            }
 
             // Xử lý upload og_image
             if ($request->hasFile('og_image')) {

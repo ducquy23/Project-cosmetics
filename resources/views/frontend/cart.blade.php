@@ -97,9 +97,6 @@
                                             
                                         </div>
                                     </div>
-                                    <a href="{{route('checkout')}}" class="continue btn btn-primary pull-xs-right">
-                                        Thanh toán
-                                    </a>
                                 </div>
                                 <div class="cart-grid-right col-xs-12 col-lg-3">
                                     <div class="cart-summary">
@@ -111,6 +108,11 @@
                                                 <span class="label">Tổng tiền:</span>
                                                 <span class="value">{{convertPrice(session('total_price'))}}</span>
                                             </div>
+                                        </div>
+                                        <div class="checkout cart-summary-actions">
+                                            <a href="{{route('checkout')}}" class="continue btn btn-primary btn-block">
+                                                Thanh toán
+                                            </a>
                                         </div>
                                     </div>
                                     <div id="block-reassurance">

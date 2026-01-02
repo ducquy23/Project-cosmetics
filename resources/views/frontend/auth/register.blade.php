@@ -56,6 +56,14 @@
                                             </div>
                                             <div class="form-group">
                                                 <div>
+                                                    <input class="form-control" name="phone" type="tel" value="{{old('phone')}}" placeholder="Số điện thoại *" required>
+                                                </div>
+                                                @error('phone')
+                                                    <p class="text-left text-danger">{{$message}}</p>
+                                                @enderror
+                                            </div>
+                                            <div class="form-group">
+                                                <div>
                                                     <div class="input-group js-parent-focus">
                                                         <input class="form-control js-child-focus js-visible-password" name="password" type="password" placeholder="Mật khẩu">
                                                     </div>
@@ -87,6 +95,14 @@
                                                 <button class="btn btn-primary" data-link-action="sign-in" type="submit">
                                                     Đăng ký
                                                 </button>
+                                            </div>
+                                        </div>
+                                        <div class="clearfix mt-3">
+                                            <div class="text-center">
+                                                <p class="mb-2">Hoặc</p>
+                                                <a href="{{route('auth.google')}}" class="btn btn-danger" style="background-color: #db4437; border-color: #db4437;">
+                                                    <i class="fa fa-google" aria-hidden="true"></i> Đăng ký bằng Gmail
+                                                </a>
                                             </div>
                                         </div>
                                     </form>

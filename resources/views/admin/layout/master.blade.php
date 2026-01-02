@@ -4,6 +4,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="Permissions-Policy" content="unload=*">
     <title>Furnitica - Quản trị viên</title>
     <link rel="shortcut icon" type="image/png" href="/assets/admin/images/logos/favicon.png"/>
     <link rel="stylesheet" href="/assets/admin/css/styles.min.css"/>
@@ -180,6 +181,16 @@
                                     <i class="ti ti-layout"></i>
                                 </span>
                                 <span class="hide-menu">Quản lý Footer</span>
+                            </a>
+                        </li>
+                    @endif
+                    @if (Auth::guard('admin')->user()->role === 'Quản trị viên')
+                        <li class="sidebar-item">
+                            <a class="sidebar-link" href="{{route('menu.index')}}" aria-expanded="false">
+                                <span>
+                                    <i class="ti ti-menu-2"></i>
+                                </span>
+                                <span class="hide-menu">Quản lý Menu</span>
                             </a>
                         </li>
                     @endif

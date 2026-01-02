@@ -45,25 +45,25 @@
                                                     <div class="tab-pane fade in active show" id="checkout-guest-form" role="tabpanel">
                                                         <div>
                                                             <div class="form-group row">
-                                                                <input class="form-control" value="{{old('name', Auth::guard('web')->user()->name)}}" name="name" type="text" placeholder="Họ tên">
+                                                                <input class="form-control" value="{{old('name', Auth::guard('web')->check() ? Auth::guard('web')->user()->name : '')}}" name="name" type="text" placeholder="Họ tên" required>
                                                                 @error('name')
                                                                     <div class="text-danger">{{$message}}</div>
                                                                 @enderror
                                                             </div>
                                                             <div class="form-group row">
-                                                                <input class="form-control" value="{{old('email', Auth::guard('web')->user()->email)}}" name="email" type="email" placeholder="Email">
+                                                                <input class="form-control" value="{{old('email', Auth::guard('web')->check() ? Auth::guard('web')->user()->email : '')}}" name="email" type="email" placeholder="Email" required>
                                                                 @error('email')
                                                                     <div class="text-danger">{{$message}}</div>
                                                                 @enderror
                                                             </div>
                                                             <div class="form-group row">
-                                                                <input class="form-control" value="{{old('phone', Auth::guard('web')->user()->phone)}}" name="phone" type="phone" placeholder="Số điện thoại">
+                                                                <input class="form-control" value="{{old('phone', Auth::guard('web')->check() ? Auth::guard('web')->user()->phone : '')}}" name="phone" type="phone" placeholder="Số điện thoại" required>
                                                                 @error('phone')
                                                                     <div class="text-danger">{{$message}}</div>
                                                                 @enderror
                                                             </div>
                                                             <div class="form-group row">
-                                                                <input class="form-control" value="{{old('address', Auth::guard('web')->user()->address)}}" name="address" type="address" placeholder="Địa chỉ nhận hàng">
+                                                                <input class="form-control" value="{{old('address', Auth::guard('web')->check() ? Auth::guard('web')->user()->address : '')}}" name="address" type="address" placeholder="Địa chỉ nhận hàng" required>
                                                                 @error('address')
                                                                     <div class="text-danger">{{$message}}</div>
                                                                 @enderror

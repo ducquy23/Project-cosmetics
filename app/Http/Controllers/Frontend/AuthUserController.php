@@ -46,15 +46,25 @@ class AuthUserController extends Controller
 
     public function registerPost(Request $request){
         $validated = $request->validate([
-            'name' => 'required|string|unique:users,name',
-            'email' => 'required|email|unique:users,email',
-            'password' => 'required|confirmed|min:6',
+            'name' => 'nullable|string|max:255',
+            'email' => 'nullable|email|unique:users,email',
+            'phone' => 'required|string|max:20|unique:users,phone',
+            'password' => 'nullable|confirmed|min:6',
         ],[
-            'name.required' => 'Họ tên không được để trống.',
-            'email.required' => 'Địa chỉ email không được để trống.',
-            'password.required' => 'Mật khẩu không được để trống.',
+            'phone.required' => 'Số điện thoại không được để trống.',
+            'phone.unique' => 'Số điện thoại này đã được sử dụng.',
+            'email.email' => 'Email không hợp lệ.',
+            'email.unique' => 'Email này đã được sử dụng.',
             'password.confirmed' => 'Mật khẩu nhập lại không khớp.',
+            'password.min' => 'Mật khẩu phải có ít nhất 6 ký tự.',
         ]);
+
+        // Nếu không có password, tạo password mặc định
+        if (empty($validated['password'])) {
+            $validated['password'] = bcrypt(str()->random(12));
+        } else {
+            $validated['password'] = bcrypt($validated['password']);
+        }
 
         $user = User::create($validated);
         if($user){
@@ -127,5 +137,17 @@ class AuthUserController extends Controller
         }else{
             return back()->withErrors(['email' => 'Địa chỉ email không hợp lệ.']);
         }
+    }
+
+    public function redirectToGoogle(){
+        // TODO: Implement Google OAuth redirect
+        // Cần cài đặt: composer require laravel/socialite
+        // Và cấu hình trong config/services.php
+        return redirect()->route('register')->with('info', 'Tính năng đăng ký bằng Gmail đang được phát triển. Vui lòng đăng ký bằng form.');
+    }
+
+    public function handleGoogleCallback(Request $request){
+        // TODO: Implement Google OAuth callback
+        return redirect()->route('register');
     }
 }

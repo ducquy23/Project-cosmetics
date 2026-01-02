@@ -10,6 +10,7 @@ use App\Models\Brand;
 use App\Models\Post;
 use App\Models\Banner;
 use App\Models\ContactMessage;
+use Illuminate\Support\Facades\Log;
 
 class ShopController extends Controller
 {
@@ -132,25 +133,62 @@ class ShopController extends Controller
         return view('frontend.contact');
     }
 
+    public function search(Request $request){
+        $keyword = $request->input('keyword', '');
+        
+        $products = collect();
+        $posts = collect();
+        
+        if($keyword) {
+            // Tìm sản phẩm
+            $products = Product::with('images')
+                ->where('name', 'like', "%$keyword%")
+                ->orWhere('description', 'like', "%$keyword%")
+                ->limit(12)
+                ->get();
+            
+            // Tìm bài viết
+            $posts = Post::where('title', 'like', "%$keyword%")
+                ->orWhere('content', 'like', "%$keyword%")
+                ->limit(6)
+                ->get();
+        }
+        
+        return view('frontend.search', compact('products', 'posts', 'keyword'));
+    }
+
     public function submitContact(Request $request){
         $data = $request->validate([
-            'name' => 'required|string|max:255',
-            'from' => 'required|email|max:255',
+            'name' => 'nullable|string|max:255',
+            'from' => 'nullable|string|max:255',
             'phone' => 'required|string|max:20',
             'message' => 'required|string',
+        ], [
+            'phone.required' => 'Vui lòng nhập số điện thoại.',
+            'message.required' => 'Vui lòng nhập nội dung.',
         ]);
+
+        if (!empty($data['from'])) {
+            $data['from'] = trim($data['from']);
+            if (!filter_var($data['from'], FILTER_VALIDATE_EMAIL)) {
+                return redirect()->route('contact')
+                    ->withInput()
+                    ->withErrors(['from' => 'Email không hợp lệ.']);
+            }
+        }
 
         try {
             ContactMessage::create([
-                'name' => $data['name'],
-                'email' => $data['from'],
-                'phone' => $data['phone'],
-                'message' => $data['message'],
+                'name' => !empty($data['name']) ? trim($data['name']) : null,
+                'email' => !empty($data['from']) ? trim($data['from']) : null,
+                'phone' => trim($data['phone']),
+                'message' => trim($data['message']),
                 'status' => 'new'
             ]);
 
             return redirect()->route('contact')->with('success', 'Cảm ơn bạn đã liên hệ! Chúng tôi sẽ phản hồi sớm nhất có thể.');
         } catch (\Exception $e) {
+            Log::error($e->getMessage());
             return redirect()->route('contact')->with('error', 'Có lỗi xảy ra. Vui lòng thử lại sau.');
         }
     }
