@@ -103,19 +103,19 @@ class ShopController extends Controller
             ->orderBy('order')
             ->limit(2)
             ->get();
-        
+
         // Load testimonials từ database
         $testimonials = HomepageSection::where('type', 'testimonial')
             ->where('is_active', true)
             ->orderBy('order')
             ->get();
-        
+
         // Load logo đối tác từ database
         $partnerLogos = HomepageSection::where('type', 'logo')
             ->where('is_active', true)
             ->orderBy('order')
             ->get();
-        
+
         return view('frontend.index', compact('discountProducts','topSellingProducts', 'newPosts', 'latestProducts', 'slides', 'categories', 'policyBlocks', 'bannerSections', 'bannerBottomSections', 'bestSellingContent', 'testimonials', 'partnerLogos'));
     }
 
