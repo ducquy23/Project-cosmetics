@@ -63,10 +63,10 @@ class ShopController extends Controller
         $newPosts = Post::orderByDesc('id')->limit(3)->get();
         $latestProducts = Product::orderByDesc('id')->limit(8)->get();
         $slides = Banner::where('type', 'slide')
-                        ->where('status', 'active')
-                        ->orderBy('order')
-                        ->orderByDesc('id')
-                        ->get();
+            ->where('status', 'active')
+            ->orderBy('order')
+            ->orderByDesc('id')
+            ->get();
         $categories = Category::whereNull('parent_id')->with('children')->get();
 
         $policyBlocks = HomepageSection::where('type', 'policy')
@@ -135,9 +135,9 @@ class ShopController extends Controller
 
     public function product(Product $product){
         $relatedProducts = Product::where('category_id', $product->category_id)
-                            ->where('id', '<>', $product->id)
-                            ->limit(3)
-                            ->get();
+            ->where('id', '<>', $product->id)
+            ->limit(3)
+            ->get();
         return view('frontend.product', compact('product', 'relatedProducts'));
     }
 
@@ -282,6 +282,69 @@ class ShopController extends Controller
         } catch (\Exception $e) {
             Log::error($e->getMessage());
             return redirect()->route('contact')->with('error', 'Có lỗi xảy ra. Vui lòng thử lại sau.');
+        }
+    }
+
+    protected function createDefaultPolicyBlocks()
+    {
+        $defaultPolicies = [
+            [
+                'type' => 'policy',
+                'title' => 'Miễn phí vận chuyển từ 499,000đ',
+                'description' => 'Lorem ipsum dolor amet consectetur',
+                'image' => '/assets/frontend/img/home/home1-policy.png',
+                'link' => null,
+                'is_active' => true,
+                'order' => 1,
+            ],
+            [
+                'type' => 'policy',
+                'title' => 'Cam kết hàng chính hãng',
+                'description' => 'Lorem ipsum dolor amet consectetur',
+                'image' => '/assets/frontend/img/home/home1-policy2.png',
+                'link' => null,
+                'is_active' => true,
+                'order' => 2,
+            ],
+            [
+                'type' => 'policy',
+                'title' => 'Đảm bảo hoàn tiền',
+                'description' => 'Lorem ipsum dolor amet consectetur',
+                'image' => '/assets/frontend/img/home/home1-policy3.png',
+                'link' => null,
+                'is_active' => true,
+                'order' => 3,
+            ],
+        ];
+
+        foreach ($defaultPolicies as $policy) {
+            HomepageSection::create($policy);
+        }
+    }
+
+    protected function createDefaultBannerSections()
+    {
+        $defaultBanners = [
+            [
+                'type' => 'banner',
+                'title' => 'Banner 1',
+                'image' => '/assets/frontend/img/home/effect1.jpg',
+                'link' => '#',
+                'is_active' => true,
+                'order' => 1,
+            ],
+            [
+                'type' => 'banner',
+                'title' => 'Banner 2',
+                'image' => '/assets/frontend/img/home/effect2.jpg',
+                'link' => '#',
+                'is_active' => true,
+                'order' => 2,
+            ],
+        ];
+
+        foreach ($defaultBanners as $banner) {
+            HomepageSection::create($banner);
         }
     }
 }
